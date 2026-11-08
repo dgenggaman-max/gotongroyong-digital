@@ -7,13 +7,14 @@ async function runTest() {
 
   // 1. Uji Pendaftaran Mitra
   console.log('1. Uji Pendaftaran Mitra: Budi Gotong Royong');
-  const mitra = Mitra.create('Budi Gotong Royong', '08123456789', 'BCA 12345678 a.n Budi', 'budi');
+  const testRef = 'mitra' + Math.floor(1000 + Math.random() * 9000);
+  const mitra = Mitra.create('Budi Gotong Royong', '08123456789', 'BCA 12345678 a.n Budi', testRef);
   console.log('   ✓ Mitra terdaftar:', mitra.nama, '| Kode Ref:', mitra.ref_code);
 
   // 2. Uji Klik Referral
-  console.log('2. Uji Simulasi Pengunjung Buka Link Referral (?ref=budi)');
-  Mitra.incrementClick('budi');
-  const mitraUpdated = Mitra.getByRef('budi');
+  console.log(`2. Uji Simulasi Pengunjung Buka Link Referral (?ref=${mitra.ref_code})`);
+  Mitra.incrementClick(mitra.ref_code);
+  const mitraUpdated = Mitra.getByRef(mitra.ref_code);
   console.log('   ✓ Total klik tercatat:', mitraUpdated.total_klik);
 
   // 3. Uji Pembuatan Pesanan dengan Referral
@@ -25,7 +26,7 @@ async function runTest() {
     product_id: 'PROD-BUKU-01',
     product_name: 'E-Book & Lembar Kerja 30 Hari: Membangun Usaha yang Bernilai',
     harga: 50000,
-    ref_code: 'budi',
+    ref_code: mitra.ref_code,
     komisi_mitra: 25000
   });
   console.log('   ✓ Pesanan dibuat:', order.order_id, '| Status:', order.status, '| Komisi Mitra:', order.komisi_mitra);
@@ -36,8 +37,8 @@ async function runTest() {
   console.log('   ✓ Status pesanan berubah menjadi:', paidOrder.status);
 
   // 5. Verifikasi Saldo & Komisi Mitra
-  const mitraFinal = Mitra.getByRef('budi');
-  console.log('5. Verifikasi Saldo Mitra Budi');
+  const mitraFinal = Mitra.getByRef(mitra.ref_code);
+  console.log(`5. Verifikasi Saldo Mitra ${mitraFinal.nama}`);
   console.log('   ✓ Total Komisi Masuk: Rp', mitraFinal.total_komisi);
   console.log('   ✓ Saldo Tersedia: Rp', mitraFinal.saldo_tersedia);
 
