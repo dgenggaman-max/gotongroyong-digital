@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: gotongroyong-digital
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 24.2.0
+      - key: PORT
+        value: 10000
+      - key: DOKU_CLIENT_ID
+        sync: false
+      - key: DOKU_SECRET_KEY
+        sync: false
+      - key: DOKU_ENV
+        value: production

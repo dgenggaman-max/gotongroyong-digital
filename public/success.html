@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status Pembayaran — Gotong Royong Digital</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200">
+    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-sm">GR</a>
+        <span class="font-bold text-slate-900 text-base">GotongRoyong<span class="text-emerald-600">.Digital</span></span>
+      </div>
+      <div>
+        <a href="/" class="text-xs text-slate-500 hover:text-emerald-700 font-semibold">Toko Utama</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-xl mx-auto px-4 py-10 flex-1 w-full">
+    
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+      
+      <!-- KONDISI 1: PEMBAYARAN SUDAH LUNAS (PAID) -->
+      <div id="boxPaid" class="hidden text-center space-y-6">
+        <!-- Icon Sukses Centang Hijau -->
+        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner font-bold">
+          ✓
+        </div>
+
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">Transaksi Terverifikasi Lunas</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Terima Kasih, Pembayaran Berhasil!</h1>
+          <p class="text-sm text-slate-600 mt-2">
+            Pembayaran Anda telah diterima dan diverifikasi resmi oleh sistem. Berkas digital Anda siap diunduh di bawah ini.
+          </p>
+        </div>
+
+        <!-- Rincian Pesanan -->
+        <div class="bg-slate-50 rounded-2xl p-4 text-left text-xs space-y-2 border border-slate-200 font-medium">
+          <div class="flex justify-between text-slate-600">
+            <span>Produk:</span>
+            <span class="font-bold text-slate-800" id="paidProduct">E-Book Membangun yang Bernilai</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Order ID:</span>
+            <span class="font-mono text-slate-800" id="paidOrderId">...</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Atas Nama:</span>
+            <span class="text-slate-800" id="paidNama">...</span>
+          </div>
+          <div class="flex justify-between text-slate-600" id="paidRefRow">
+            <span>Mitra Pendukung:</span>
+            <span class="font-bold text-emerald-700" id="paidRef">Mitra</span>
+          </div>
+          <div class="flex justify-between text-slate-600">
+            <span>Status:</span>
+            <span class="font-bold text-emerald-600">LUNAS (PAID)</span>
+          </div>
+        </div>
+
+        <!-- Tombol Download Dokumen PDF Asli -->
+        <div class="pt-2">
+          <a id="btnDownload" href="#"
+            class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition flex items-center justify-center space-x-2">
+            <span>📥 Unduh E-Book & Lembar Kerja (PDF)</span>
+          </a>
+          <p class="text-[11px] text-slate-400 mt-2">
+            Ukuran berkas: ~164 KB (PDF 25 Halaman Lengkap). Unduhan Anda aktif selamanya.
+          </p>
+        </div>
+
+        <!-- Ajakan Gotong Royong -->
+        <div class="mt-8 pt-6 border-t border-slate-100 text-left bg-gradient-to-br from-amber-50 to-emerald-50 p-5 rounded-2xl border border-amber-200/60">
+          <div class="flex items-start space-x-3">
+            <span class="text-2xl">💡</span>
+            <div>
+              <h4 class="font-bold text-slate-900 text-sm">Mau Dapat Penghasilan dari Buku Ini?</h4>
+              <p class="text-xs text-slate-600 mt-1">
+                Daftar jadi <strong>Mitra Gotong Royong</strong> gratis. Bagikan link referral Anda dan dapatkan komisi <strong>Rp 25.000 (50%)</strong> untuk setiap buku yang terbeli!
+              </p>
+              <a href="/mitra" class="inline-block mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-slate-800 transition">
+                Daftar Jadi Mitra ➔
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- KONDISI 2: PEMBAYARAN BELUM SELESAI (PENDING) -->
+      <div id="boxPending" class="text-center space-y-6">
+        <!-- Icon Menunggu Jam Pasir Kuning -->
+        <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner font-bold">
+          ⏳
+        </div>
+
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">Menunggu Pelunasan</span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Pembayaran Belum Selesai</h1>
+          <p class="text-sm text-slate-600 mt-2">
+            Pesanan ini masih berstatus <strong>MENUNGGU PEMBAYARAN</strong>. Berkas digital belum dapat diunduh sebelum pembayaran Anda terverifikasi oleh bank.
+          </p>
+        </div>
+
+        <!-- Rincian Tagihan Belum Lunas -->
+        <div class="bg-amber-50/60 rounded-2xl p-4 text-left text-xs space-y-2 border border-amber-200 text-slate-700">
+          <div class="flex justify-between">
+            <span>Nomor Pesanan:</span>
+            <span class="font-mono font-bold" id="pendingOrderId">...</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Total Tagihan:</span>
+            <span class="font-extrabold text-slate-900" id="pendingHarga">Rp 50.000</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Status Saat Ini:</span>
+            <span class="font-bold text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded">BELUM DIBAYAR</span>
+          </div>
+        </div>
+
+        <!-- Tombol Tindakan Pembeli -->
+        <div class="space-y-3 pt-2">
+          <a id="btnBackToCheckout" href="#"
+            class="block w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition">
+            💳 Selesaikan Pembayaran di DOKU ➔
+          </a>
+          
+          <button id="btnCheckStatusManual"
+            class="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-300 text-xs transition flex items-center justify-center space-x-1">
+            <span>🔄 Sudah Bayar? Klik untuk Cek Ulang Status</span>
+          </button>
+        </div>
+
+        <div class="flex items-center justify-center space-x-2 text-[11px] text-slate-400 pt-2">
+          <svg class="animate-spin h-3.5 w-3.5 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Sistem terus memeriksa konfirmasi dari bank setiap 5 detik...</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
+    GotongRoyong.Digital — Verifikasi Transaksi Aman
+  </footer>
+
+  <script>
+    const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:3000';
+    const orderId = window.location.pathname.split('/').pop();
+
+    let checkInterval = null;
+
+    async function checkOrderStatus() {
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/${orderId}`);
+        const data = await res.json();
+
+        if (data.error) {
+          alert('Pesanan tidak ditemukan.');
+          window.location.href = `${API_BASE}/`;
+          return;
+        }
+
+        // PENTING: Periksa apakah pesanan BENAR-BENAR sudah LUNAS (PAID)
+        if (data.is_paid && data.download_url) {
+          // Status LUNAS: Tampilkan box sukses dan buka tombol download
+          if (checkInterval) clearInterval(checkInterval);
+
+          document.getElementById('boxPending').classList.add('hidden');
+          document.getElementById('boxPaid').classList.remove('hidden');
+
+          document.getElementById('paidOrderId').textContent = data.order_id;
+          document.getElementById('paidProduct').textContent = data.product_name;
+          document.getElementById('paidNama').textContent = data.pembeli_nama;
+
+          if (data.ref_code) {
+            document.getElementById('paidRef').textContent = data.ref_code + ' (Komisi 50% tersalurkan)';
+          } else {
+            document.getElementById('paidRefRow').classList.add('hidden');
+          }
+
+          document.getElementById('btnDownload').href = `${API_BASE}${data.download_url}`;
+        } else {
+          // Status MASIH PENDING: Jangan beri akses download!
+          document.getElementById('boxPaid').classList.add('hidden');
+          document.getElementById('boxPending').classList.remove('hidden');
+
+          document.getElementById('pendingOrderId').textContent = data.order_id;
+          document.getElementById('pendingHarga').textContent = 'Rp ' + Number(data.harga).toLocaleString('id-ID');
+
+          // Tombol arahkan kembali ke checkout/DOKU
+          const payTarget = data.payment_url || `${API_BASE}/checkout/${orderId}`;
+          document.getElementById('btnBackToCheckout').href = payTarget;
+        }
+      } catch (err) {
+        console.error('Gagal memeriksa status pesanan:', err);
+      }
+    }
+
+    // Tombol Cek Manual
+    document.getElementById('btnCheckStatusManual').addEventListener('click', async () => {
+      const btn = document.getElementById('btnCheckStatusManual');
+      btn.textContent = 'Memeriksa ke server bank DOKU...';
+      await checkOrderStatus();
+      btn.textContent = '🔄 Sudah Bayar? Klik untuk Cek Ulang Status';
+    });
+
+    // Jalankan pemeriksaan pertama kali
+    checkOrderStatus();
+
+    // Auto-polling setiap 5 detik untuk mendeteksi saat uang benar-benar masuk
+    checkInterval = setInterval(checkOrderStatus, 5000);
+  </script>
+</body>
+</html>

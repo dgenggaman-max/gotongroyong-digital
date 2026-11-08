@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Membangun yang Bernilai — E-Book & Lembar Kerja 30 Hari</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+  <!-- Header / Navigation -->
+  <header class="bg-white/90 backdrop-blur border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+          GR
+        </div>
+        <div>
+          <span class="font-extrabold text-slate-900 tracking-tight text-lg">GotongRoyong<span class="text-emerald-600">.Digital</span></span>
+          <span class="hidden sm:inline-block text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 py-0.5 rounded-full ml-2">Platform Bagi Hasil Mandiri</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <a href="/mitra" class="text-sm font-semibold text-emerald-700 hover:text-emerald-800 px-3 py-2 rounded-lg hover:bg-emerald-50 transition">
+          🤝 Jadi Mitra (Komisi 50%)
+        </a>
+        <a href="#beli" class="text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl shadow-sm transition">
+          Beli Sekarang
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Banner Referral Aktif -->
+  <div id="referralBanner" class="hidden bg-emerald-50 border-b border-emerald-200 py-2.5 px-4 text-center text-sm text-emerald-900">
+    <div class="max-w-4xl mx-auto flex items-center justify-center space-x-2">
+      <span class="text-base">🤝</span>
+      <span>Anda berbelanja lewat rekomendasi mitra gotong royong: <strong id="mitraName" class="underline">Mitra</strong>. 50% hasil penjualan akan langsung dibagikan kepadanya!</span>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <main class="max-w-6xl mx-auto px-4 py-12 md:py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Kolom Kiri: Penjelasan Buku -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="inline-flex items-center space-x-2 bg-amber-50 border border-amber-200 text-amber-900 px-3 py-1 rounded-full text-xs font-semibold">
+          <span>⭐ Edisi Eksklusif Praktisi & Calon Pengusaha</span>
+        </div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 leading-tight">
+          Membangun yang Bernilai: <span class="text-emerald-700">Panduan Kerja Usaha Mandiri</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+          Buku kerja 25 halaman aplikatif dengan <strong>10 Bab Terstruktur</strong>, contoh konkret bisnis lokal, latihan praktis, dan <strong>Lembar Kerja Rencana 30 Hari</strong> dari ide mentah hingga menghasilkan keuntungan nyata.
+        </p>
+
+        <!-- Poin Nilai -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+          <div class="flex items-start space-x-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-emerald-600 text-xl font-bold">✓</span>
+            <div>
+              <h4 class="font-bold text-sm text-slate-800">10 Bab Sistematis</h4>
+              <p class="text-xs text-slate-500">Dari validasi masalah, janji nilai, hingga penentuan harga.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-emerald-600 text-xl font-bold">✓</span>
+            <div>
+              <h4 class="font-bold text-sm text-slate-800">Lembar Kerja 30 Hari</h4>
+              <p class="text-xs text-slate-500">Langsung praktik tanpa perlu menebak langkah selanjutnya.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-emerald-600 text-xl font-bold">✓</span>
+            <div>
+              <h4 class="font-bold text-sm text-slate-800">Format PDF Instan</h4>
+              <p class="text-xs text-slate-500">Langsung bisa dibaca di HP, tablet, laptop, atau dicetak.</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3 p-3 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <span class="text-emerald-600 text-xl font-bold">✓</span>
+            <div>
+              <h4 class="font-bold text-sm text-slate-800">Ekonomi Gotong Royong</h4>
+              <p class="text-xs text-slate-500">Dukung sesama anak bangsa lewat bagi hasil adil 50%.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kutipan / Cuplikan Materi -->
+        <div class="bg-slate-100 rounded-2xl p-5 border border-slate-200 text-sm space-y-2">
+          <p class="font-bold text-slate-700">Daftar Materi yang Dibedah:</p>
+          <div class="grid grid-cols-2 gap-2 text-xs text-slate-600">
+            <span>• Bab 1: Masalah yang Berharga</span>
+            <span>• Bab 6: Penetapan Harga & Biaya</span>
+            <span>• Bab 2: Siapa Pelanggan Pertama</span>
+            <span>• Bab 7: Menjangkau Pelanggan</span>
+            <span>• Bab 3: Janji Nilai yang Unik</span>
+            <span>• Bab 8: Menjaga Kualitas & Operasi</span>
+            <span>• Bab 4: Percobaan Skala Kecil</span>
+            <span>• Bab 9: Risiko yang Harus Dihindari</span>
+            <span>• Bab 5: Bukti Pasar Sebelum Modal</span>
+            <span>• Bab 10: Rencana Aksi 30 Hari</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Kolom Kanan: Kartu Checkout Langsung -->
+      <div id="beli" class="lg:col-span-5">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border-2 border-emerald-500 shadow-xl relative overflow-hidden">
+          
+          <div class="absolute -top-3 -right-12 bg-amber-400 text-amber-950 font-extrabold text-xs px-12 py-3 rotate-12 shadow-sm">
+            HEMAT 50%
+          </div>
+
+          <div class="mb-6">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-700">Akses Digital Lengkap</span>
+            <div class="flex items-baseline space-x-2 mt-1">
+              <span class="text-3xl sm:text-4xl font-extrabold text-slate-900">Rp 50.000</span>
+              <span class="text-sm text-slate-400 line-through">Rp 100.000</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">Sekali bayar, akses selamanya & langsung download PDF.</p>
+          </div>
+
+          <form id="orderForm" class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
+              <input type="text" id="pembeli_nama" required placeholder="Contoh: Budi Santoso"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Email Aktif (Pengiriman Link)</label>
+              <input type="email" id="pembeli_email" required placeholder="budi@example.com"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm outline-none transition">
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp</label>
+              <input type="tel" id="pembeli_wa" required placeholder="08123456789"
+                class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-sm outline-none transition">
+            </div>
+
+            <div class="pt-2">
+              <button type="submit" id="btnSubmit"
+                class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-xl shadow-lg shadow-emerald-600/30 text-base transition flex items-center justify-center space-x-2">
+                <span>Lanjut ke Pembayaran QRIS</span>
+                <span>➔</span>
+              </button>
+            </div>
+
+            <div class="flex items-center justify-center space-x-4 pt-3 text-xs text-slate-500">
+              <span class="flex items-center space-x-1">
+                <span>🔒</span>
+                <span>Proses Pembayaran Instan</span>
+              </span>
+              <span>•</span>
+              <span class="flex items-center space-x-1">
+                <span>📱</span>
+                <span>QRIS Semua Bank & E-Wallet</span>
+              </span>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Statistik Transparansi Gotong Royong -->
+  <section class="bg-emerald-900 text-white py-12 border-t border-emerald-800">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="text-center mb-8">
+        <h3 class="text-xl sm:text-2xl font-extrabold">Ekonomi Gotong Royong yang Sehat & Transparan</h3>
+        <p class="text-emerald-200 text-sm mt-1">Platform mandiri di mana setiap karya digital anak bangsa memberikan manfaat bagi sesama.</p>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div class="p-4 bg-emerald-800/60 rounded-2xl border border-emerald-700">
+          <div id="statMitra" class="text-2xl sm:text-3xl font-extrabold text-amber-300">0</div>
+          <div class="text-xs text-emerald-200 mt-1 uppercase font-semibold">Mitra Berbagi Link</div>
+        </div>
+        <div class="p-4 bg-emerald-800/60 rounded-2xl border border-emerald-700">
+          <div id="statBuku" class="text-2xl sm:text-3xl font-extrabold text-amber-300">0</div>
+          <div class="text-xs text-emerald-200 mt-1 uppercase font-semibold">Buku Terdistribusi</div>
+        </div>
+        <div class="p-4 bg-emerald-800/60 rounded-2xl border border-emerald-700">
+          <div class="text-2xl sm:text-3xl font-extrabold text-amber-300">50%</div>
+          <div class="text-xs text-emerald-200 mt-1 uppercase font-semibold">Komisi Bagi Hasil</div>
+        </div>
+        <div class="p-4 bg-emerald-800/60 rounded-2xl border border-emerald-700">
+          <div id="statKomisi" class="text-2xl sm:text-3xl font-extrabold text-amber-300">Rp 0</div>
+          <div class="text-xs text-emerald-200 mt-1 uppercase font-semibold">Hak Mitra Tersalur</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-8 text-center text-xs border-t border-slate-800">
+    <div class="max-w-6xl mx-auto px-4 space-y-2">
+      <p class="text-slate-300 font-semibold">GotongRoyong.Digital — Platform Karya Digital Mandiri Berbasis Bagi Hasil Riil</p>
+      <p>Bebas dari skema piramida dan penipuan keuangan. Menjual produk riil bernilai guna tinggi dengan sistem afiliasi langsung.</p>
+      <p class="text-slate-500 pt-2">© 2026 Karya Digital Gotong Royong. Hak Cipta Dilindungi.</p>
+    </div>
+  </footer>
+
+  <script>
+    const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:3000';
+
+    // Ambil Info Produk & Referral
+    async function loadInfo() {
+      try {
+        const res = await fetch(`${API_BASE}/api/product-info`);
+        const data = await res.json();
+        if (data.active_ref) {
+          document.getElementById('referralBanner').classList.remove('hidden');
+          document.getElementById('mitraName').textContent = data.active_ref.nama + ' (' + data.active_ref.ref_code + ')';
+        }
+
+        const statRes = await fetch(`${API_BASE}/api/public-summary`);
+        const stats = await statRes.json();
+        document.getElementById('statMitra').textContent = stats.total_mitra;
+        document.getElementById('statBuku').textContent = stats.total_buku_terjual;
+        document.getElementById('statKomisi').textContent = 'Rp ' + Number(stats.total_komisi_tersalurkan).toLocaleString('id-ID');
+      } catch (e) {
+        console.warn('Gagal memuat status server:', e.message);
+      }
+    }
+
+    // Submit Checkout
+    document.getElementById('orderForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerHTML = '<span>Memproses Pesanan...</span>';
+
+      const payload = {
+        pembeli_nama: document.getElementById('pembeli_nama').value,
+        pembeli_email: document.getElementById('pembeli_email').value,
+        pembeli_wa: document.getElementById('pembeli_wa').value
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/create`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (data.success && data.redirect_url) {
+          // Arahkan ke URL checkout di server
+          const targetUrl = (window.location.origin.startsWith('http'))
+            ? data.redirect_url
+            : `${API_BASE}${data.redirect_url}`;
+          window.location.href = targetUrl;
+        } else {
+          alert(data.error || 'Terjadi kesalahan saat memproses pesanan.');
+          btn.disabled = false;
+          btn.textContent = 'Lanjut ke Pembayaran QRIS ➔';
+        }
+      } catch (err) {
+        alert('Gagal menghubungi server di ' + API_BASE + '.\n\nPastikan server sudah aktif dengan menjalankan file "start-server.bat" atau perintah "node server.js".\n\nDetail: ' + err.message);
+        btn.disabled = false;
+        btn.textContent = 'Lanjut ke Pembayaran QRIS ➔';
+      }
+    });
+
+    loadInfo();
+  </script>
+</body>
+</html>
