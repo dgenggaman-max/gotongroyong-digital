@@ -2,7 +2,8 @@ const { DatabaseSync } = require('node:sqlite');
 const path = require('node:path');
 const fs = require('node:fs');
 
-const dbPath = path.join(__dirname, 'gotong_royong.db');
+const dbDir = process.env.VERCEL ? '/tmp' : __dirname;
+const dbPath = path.join(dbDir, 'gotong_royong.db');
 const db = new DatabaseSync(dbPath);
 
 // Inisialisasi Tabel

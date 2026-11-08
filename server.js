@@ -8,6 +8,17 @@ const { Doku } = require('./doku');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Set default URL publik live jika belum ditentukan di environment
+if (!process.env.APP_BASE_URL) {
+  if (process.env.VERCEL_URL) {
+    process.env.APP_BASE_URL = `https://${process.env.VERCEL_URL}`;
+  } else if (process.env.RENDER_EXTERNAL_URL) {
+    process.env.APP_BASE_URL = process.env.RENDER_EXTERNAL_URL;
+  } else {
+    process.env.APP_BASE_URL = 'http://localhost:' + PORT;
+  }
+}
+
 // Middleware CORS Lengkap (Mencegah error 'Failed to fetch' dari browser / file://)
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -413,11 +424,15 @@ app.get('/download/:download_token', (req, res) => {
 });
 
 // Mulai Server
-app.listen(PORT, () => {
-  console.log(`=======================================================`);
-  console.log(`🚀 Platform Gotong Royong Digital aktif di http://localhost:${PORT}`);
-  console.log(`📖 Katalog & Pembelian: http://localhost:${PORT}`);
-  console.log(`🤝 Portal Mitra/Afiliasi: http://localhost:${PORT}/mitra`);
-  console.log(`💳 Integrasi DOKU: ${Doku.getConfig().isConfigured ? 'TERHUBUNG (' + Doku.getConfig().origin + ')' : 'BELUM DIKONFIGURASI'}`);
-  console.log(`=======================================================`);
-});
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`=======================================================`);
+    console.log(`🚀 Platform Gotong Royong Digital aktif di http://localhost:${PORT}`);
+    console.log(`📖 Katalog & Pembelian: http://localhost:${PORT}`);
+    console.log(`🤝 Portal Mitra/Afiliasi: http://localhost:${PORT}/mitra`);
+    console.log(`💳 Integrasi DOKU: ${Doku.getConfig().isConfigured ? 'TERHUBUNG (' + Doku.getConfig().origin + ')' : 'BELUM DIKONFIGURASI'}`);
+    console.log(`=======================================================`);
+  });
+}
+
+module.exports = app;
