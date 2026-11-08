@@ -2,12 +2,12 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>Portal Mitra Gotong Royong — Bagikan Link & Dapatkan Komisi 50%</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
@@ -61,25 +61,25 @@
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nama Lengkap</label>
           <input type="text" id="regNama" required placeholder="Contoh: Ahmad Fauzi"
-            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition">
+            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Nomor WhatsApp Aktif</label>
           <input type="tel" id="regWa" required placeholder="081234567890"
-            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition">
+            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Data Rekening Bank / E-Wallet (Untuk Pencairan Komisi)</label>
           <input type="text" id="regRekening" required placeholder="Contoh: Bank BCA 12345678 a.n Ahmad Fauzi / DANA 08123456789"
-            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition">
+            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
         </div>
 
         <div>
           <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kode Referral Kustom (Opsional)</label>
           <input type="text" id="regCustomRef" placeholder="Contoh: fauzi (huruf & angka kecil saja)"
-            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition">
+            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
           <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika ingin dibuatkan otomatis oleh sistem.</p>
         </div>
 

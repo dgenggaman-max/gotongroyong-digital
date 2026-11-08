@@ -142,9 +142,15 @@ const Doku = {
     };
   },
 
-  // Khusus membuat transaksi QRIS Dinamis DOKU
+  // Khusus membuat transaksi QRIS Dinamis DOKU dengan Auto-Fallback aman
   createQrisPayment: async (order) => {
-    return await Doku.createCheckoutPayment(order, ['QRIS']);
+    try {
+      return await Doku.createCheckoutPayment(order, ['QRIS']);
+    } catch (err) {
+      console.warn('QRIS Channel spesifik belum aktif di DOKU, beralih ke Hosted Checkout otomatis:', err.message);
+      // Fallback ke Hosted Checkout umum (VA, Minimarket, dan QRIS jika sudah disetujui BI)
+      return await Doku.createCheckoutPayment(order, null);
+    }
   },
 
   // Cek Status Transaksi Resmi ke DOKU (Non-SNAP GET API)

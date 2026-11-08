@@ -2,97 +2,144 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pembayaran — Gotong Royong Digital</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pembayaran Aman — Gotong Royong Digital</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+    .tab-active { border-color: #059669; color: #065f46; background-color: #ecfdf5; }
+    .tab-inactive { border-color: transparent; color: #64748b; background-color: transparent; }
   </style>
 </head>
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
-  <!-- Header -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+  <!-- Header Mobile Friendly -->
+  <header class="bg-white/95 backdrop-blur border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-2xl mx-auto px-4 h-14 sm:h-16 flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-sm">GR</a>
-        <span class="font-bold text-slate-900 text-base">GotongRoyong<span class="text-emerald-600">.Digital</span></span>
+        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-sm shadow-sm">GR</a>
+        <span class="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight">GotongRoyong<span class="text-emerald-600">.Digital</span></span>
       </div>
-      <div class="flex items-center space-x-2">
-        <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full flex items-center space-x-1">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+      <div class="flex items-center space-x-1.5">
+        <span class="text-[11px] sm:text-xs bg-emerald-50 text-emerald-800 border border-emerald-200 font-bold px-2 py-1 rounded-full flex items-center space-x-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           <span>DOKU TERHUBUNG</span>
         </span>
       </div>
     </div>
   </header>
 
-  <main class="max-w-xl mx-auto px-4 py-8 flex-1 w-full">
+  <main class="max-w-md mx-auto px-3.5 py-4 sm:py-8 flex-1 w-full">
     
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-7 border border-slate-200/80 shadow-lg space-y-5">
       
-      <!-- Ringkasan Tagihan -->
-      <div class="text-center pb-4 border-b border-slate-100">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">Tagihan Pembayaran</span>
-        <div class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3" id="orderHarga">Rp 50.000</div>
-        <p class="text-xs text-slate-600 mt-1 font-medium" id="orderProductName">Memuat pesanan...</p>
-        <p class="text-[11px] font-mono text-slate-400 mt-0.5">Order ID: <span id="orderIdText">...</span></p>
+      <!-- Ringkasan Tagihan Mobile -->
+      <div class="text-center pb-3 border-b border-slate-100">
+        <span class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-0.5 rounded-full">Tagihan Pembayaran</span>
+        <div class="text-2xl sm:text-4xl font-extrabold text-slate-900 mt-2" id="orderHarga">Rp 50.000</div>
+        <p class="text-xs text-slate-600 mt-1 font-medium" id="orderProductName">Memuat rincian pesanan...</p>
+        <p class="text-[11px] font-mono text-slate-400 mt-0.5">ID: <span id="orderIdText">...</span></p>
       </div>
 
-      <!-- Banner Gotong Royong Bagi Hasil -->
-      <div id="referralNotice" class="hidden bg-emerald-50 border border-emerald-200 rounded-2xl p-3 text-xs text-emerald-900 flex items-center space-x-2">
-        <span class="text-lg">🤝</span>
+      <!-- Notifikasi Gotong Royong Komisi Mitra -->
+      <div id="referralNotice" class="hidden bg-emerald-50/80 border border-emerald-200 rounded-xl p-2.5 sm:p-3 text-[11px] sm:text-xs text-emerald-900 flex items-center space-x-2">
+        <span class="text-lg flex-shrink-0">🤝</span>
         <div>
-          <span>Transaksi ini mendukung mitra: <strong id="refText" class="font-bold">...</strong>. Komisi 50% akan otomatis masuk ke saldo mitra setelah pembayaran Anda selesai.</span>
+          <span>Mendukung mitra: <strong id="refText" class="font-bold underline">...</strong>. Komisi 50% (Rp 25.000) otomatis dibagikan setelah lunas.</span>
         </div>
       </div>
 
-      <!-- STATUS RESMI DOKU -->
-      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs space-y-2">
-        <div class="flex items-center justify-between font-semibold text-slate-700">
-          <span>Merchant Resmi DOKU:</span>
-          <span class="text-emerald-700 font-bold">AYAM GEPREK RAJA RASA</span>
+      <!-- Tab Pembayaran: QRIS vs DOKU Hosted -->
+      <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-bold">
+        <button id="tabBtnQris" type="button" class="tab-active py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
+          <span>⚡ QRIS Nasional</span>
+        </button>
+        <button id="tabBtnDoku" type="button" class="tab-inactive py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
+          <span>💳 Virtual Account</span>
+        </button>
+      </div>
+
+      <!-- KONTEN TAB 1: QRIS DINAMIS -->
+      <div id="tabContentQris" class="space-y-4 text-center">
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center">
+          <!-- Gambar QRIS -->
+          <div class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm max-w-[240px] w-full">
+            <img id="qrisImage" src="" alt="Kode QRIS Pembayaran" class="w-full h-auto object-contain aspect-square rounded-lg mx-auto">
+            <div id="qrisLoader" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center rounded-lg space-y-2">
+              <div class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-[11px] font-medium text-slate-500">Membuat QRIS...</span>
+            </div>
+          </div>
+
+          <!-- Logo E-Wallet & Bank Pendukung -->
+          <p class="text-[11px] text-slate-500 mt-2 font-medium">
+            Scan via BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay & semua bank.
+          </p>
+
+          <!-- Tombol Download QRIS di HP -->
+          <div class="mt-3 w-full flex flex-col sm:flex-row gap-2">
+            <a id="btnDownloadQris" href="#" download="QRIS_GotongRoyong.png"
+              class="flex-1 py-2.5 px-3 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center justify-center space-x-1 shadow-sm">
+              <span>⬇️ Unduh Gambar QR</span>
+            </a>
+            <button id="btnRefreshQris" type="button"
+              class="py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold rounded-xl transition">
+              🔄 Muat Ulang
+            </button>
+          </div>
         </div>
-        <div class="flex items-center justify-between text-slate-500 text-[11px]">
-          <span>Client ID (Mall ID):</span>
-          <span class="font-mono">BRN-0271-1793450501160</span>
-        </div>
-        <div class="flex items-center justify-between text-slate-500 text-[11px]">
-          <span>Status Layanan:</span>
-          <span class="text-emerald-600 font-bold">✓ Virtual Account, Indomaret, Alfamart (AKTIF)</span>
-        </div>
-        <div class="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 mt-1">
-          ℹ️ <strong>Status QRIS Nasional:</strong> Pengajuan QRIS baru saja dikirimkan ke DOKU (status: <em>UPDATING</em>). Selama antrean Bank Indonesia aktif, pembayaran langsung melalui <strong>Virtual Account (BCA, Mandiri, BRI, BNI, BSI) & Minimarket</strong> sudah 100% aktif dan dapat dibayar langsung!
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-left text-[11px] text-amber-900 space-y-1">
+          <p class="font-bold flex items-center space-x-1">
+            <span>📱 Cara Bayar di HP:</span>
+          </p>
+          <ol class="list-decimal list-inside space-y-0.5 text-amber-800">
+            <li>Screenshot atau klik tombol <strong>Unduh Gambar QR</strong> di atas.</li>
+            <li>Buka aplikasi m-Banking (BCA, Livin', BRImo) atau E-Wallet (GoPay, OVO, Dana).</li>
+            <li>Pilih menu <strong>Scan QRIS</strong> lalu pilih foto QR dari galeri HP Anda.</li>
+          </ol>
         </div>
       </div>
 
-      <!-- TOMBOL UTAMA PEMBAYARAN DOKU -->
-      <div class="space-y-3 pt-2">
-        <button id="btnDokuPayNow"
-          class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition flex items-center justify-center space-x-2">
-          <span>💳 Bayar Sekarang via DOKU Resmi</span>
+      <!-- KONTEN TAB 2: DOKU HOSTED CHECKOUT -->
+      <div id="tabContentDoku" class="hidden space-y-4">
+        <!-- Status Resmi Merchant -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs space-y-2">
+          <div class="flex items-center justify-between font-semibold text-slate-700">
+            <span>Merchant Resmi:</span>
+            <span class="text-emerald-700 font-bold truncate ml-2">AYAM GEPREK RAJA RASA</span>
+          </div>
+          <div class="flex items-center justify-between text-slate-500 text-[11px]">
+            <span>Metode Tersedia:</span>
+            <span class="text-emerald-600 font-bold">BCA, Mandiri, BRI, BNI, BSI, Alfamart</span>
+          </div>
+        </div>
+
+        <button id="btnDokuPayNow" type="button"
+          class="w-full py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-xl sm:rounded-2xl shadow-lg shadow-emerald-600/30 text-sm sm:text-base transition flex items-center justify-center space-x-2">
+          <span>💳 Bayar via DOKU Resmi</span>
           <span>➔</span>
         </button>
-        <p class="text-[11px] text-center text-slate-500">
-          Klik tombol di atas untuk membuka halaman pembayaran resmi DOKU (Virtual Account semua bank, Alfamart, Indomaret, dll.).
+        <p class="text-[11px] text-center text-slate-400">
+          Mendukung Virtual Account semua bank utama dan gerai minimarket terdekat.
         </p>
       </div>
 
-      <!-- Hitung Mundur & Polling -->
-      <div class="flex items-center justify-between text-xs text-slate-500 px-2 pt-2 border-t border-slate-100">
-        <div>Sisa Waktu Pembayaran: <strong id="countdownTimer" class="text-red-600 font-mono font-bold">14:59</strong></div>
-        <div class="flex items-center space-x-1.5 text-emerald-700">
+      <!-- Hitung Mundur & Polling Otomatis -->
+      <div class="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 px-1 pt-2 border-t border-slate-100">
+        <div>Sisa Waktu: <strong id="countdownTimer" class="text-red-600 font-mono font-bold">14:59</strong></div>
+        <div class="flex items-center space-x-1.5 text-emerald-700 font-medium">
           <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-          <span>Menunggu Pembayaran...</span>
+          <span>Menunggu bayar...</span>
         </div>
       </div>
 
-      <!-- Tombol Simulasi Pembayaran (Untuk Pengujian & Demo) -->
-      <div class="pt-4 border-t border-slate-100 text-center">
-        <button id="btnSimulatePay"
-          class="py-2 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-xs transition">
-          ⚡ Uji Simulasi Pelunasan Instan (Mode Demo)
+      <!-- Simulasi Pembayaran Instan (Khusus Uji Coba) -->
+      <div class="pt-2 text-center">
+        <button id="btnSimulatePay" type="button"
+          class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl text-xs transition border border-slate-200">
+          ⚡ Uji Simulasi Pembayaran Sukses (Mode Demo)
         </button>
       </div>
 
@@ -100,19 +147,40 @@
 
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-    GotongRoyong.Digital — Pembayaran Resmi Terverifikasi DOKU
+  <footer class="bg-white border-t border-slate-200 py-3 text-center text-[11px] text-slate-400">
+    GotongRoyong.Digital — Pembayaran Terenkripsi & Terverifikasi DOKU
   </footer>
 
   <script>
     const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:3000';
-    const orderId = window.location.pathname.split('/').pop();
+    const pathParts = window.location.pathname.split('/');
+    const orderId = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
     document.getElementById('orderIdText').textContent = orderId;
 
     let pollInterval = null;
-    let paymentUrl = null;
+    let dokuPaymentUrl = null;
 
-    // Load Data Pesanan
+    // Tab Switching
+    const tabBtnQris = document.getElementById('tabBtnQris');
+    const tabBtnDoku = document.getElementById('tabBtnDoku');
+    const tabContentQris = document.getElementById('tabContentQris');
+    const tabContentDoku = document.getElementById('tabContentDoku');
+
+    tabBtnQris.addEventListener('click', () => {
+      tabBtnQris.className = 'tab-active py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1';
+      tabBtnDoku.className = 'tab-inactive py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1';
+      tabContentQris.classList.remove('hidden');
+      tabContentDoku.classList.add('hidden');
+    });
+
+    tabBtnDoku.addEventListener('click', () => {
+      tabBtnDoku.className = 'tab-active py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1';
+      tabBtnQris.className = 'tab-inactive py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1';
+      tabContentDoku.classList.remove('hidden');
+      tabContentQris.classList.add('hidden');
+    });
+
+    // Load Order
     async function loadOrder() {
       try {
         const res = await fetch(`${API_BASE}/api/orders/${orderId}`);
@@ -136,10 +204,8 @@
           document.getElementById('refText').textContent = data.ref_code;
         }
 
-        // Siapkan DOKU Checkout Langsung
+        loadQrisImage();
         prepareDokuCheckout();
-
-        // Mulai Polling Status Pesanan & Timer
         startPolling();
         startTimer(15 * 60);
       } catch (err) {
@@ -147,38 +213,62 @@
       }
     }
 
+    // Load QRIS
+    async function loadQrisImage() {
+      const loader = document.getElementById('qrisLoader');
+      const img = document.getElementById('qrisImage');
+      const btnDownload = document.getElementById('btnDownloadQris');
+      loader.classList.remove('hidden');
+
+      try {
+        const res = await fetch(`${API_BASE}/api/orders/${orderId}/qr`);
+        const data = await res.json();
+        if (data.qr_data_url) {
+          img.src = data.qr_data_url;
+          btnDownload.href = data.qr_data_url;
+        }
+      } catch (e) {
+        console.error('Gagal memuat QRIS:', e);
+      } finally {
+        loader.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('btnRefreshQris').addEventListener('click', loadQrisImage);
+
+    // Prepare DOKU Checkout
     async function prepareDokuCheckout() {
       try {
         const res = await fetch(`${API_BASE}/api/orders/${orderId}/doku-checkout`, { method: 'POST' });
         const data = await res.json();
         if (data.success && data.paymentUrl) {
-          paymentUrl = data.paymentUrl;
+          dokuPaymentUrl = data.paymentUrl;
         }
       } catch (e) {
-        console.error('Gagal menyiapkan checkout:', e);
+        console.warn('Persiapan DOKU checkout:', e.message);
       }
     }
 
-    // Klik Tombol Bayar Sekarang
+    // Tombol Bayar DOKU
     document.getElementById('btnDokuPayNow').addEventListener('click', async () => {
       const btn = document.getElementById('btnDokuPayNow');
       btn.disabled = true;
-      btn.innerHTML = '<span>Membuka Gerbang DOKU...</span>';
+      btn.innerHTML = '<span>Menghubungkan ke DOKU...</span>';
 
-      if (!paymentUrl) {
+      if (!dokuPaymentUrl) {
         await prepareDokuCheckout();
       }
 
-      if (paymentUrl) {
-        window.location.href = paymentUrl;
+      if (dokuPaymentUrl) {
+        window.location.href = dokuPaymentUrl;
       } else {
-        alert('Gagal memuat halaman pembayaran DOKU. Silakan coba sesaat lagi.');
+        alert('Gagal menghubungkan ke DOKU. Anda tetap dapat membayar lewat tab QRIS di sebelah.');
         btn.disabled = false;
-        btn.innerHTML = '<span>💳 Bayar Sekarang via DOKU Resmi ➔</span>';
+        btn.innerHTML = '<span>💳 Bayar via DOKU Resmi ➔</span>';
       }
     });
 
-    // Polling Status Pesanan
+    // Polling Status
     function startPolling() {
       pollInterval = setInterval(async () => {
         try {
@@ -207,7 +297,7 @@
       }, 1000);
     }
 
-    // Simulasi
+    // Simulasi Bayar
     document.getElementById('btnSimulatePay').addEventListener('click', async () => {
       const btn = document.getElementById('btnSimulatePay');
       btn.disabled = true;
