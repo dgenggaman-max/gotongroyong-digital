@@ -245,6 +245,101 @@ async function runTestSuite() {
     assert(mitraFinalData.mitra.total_komisi === 25000, 'Total riwayat akumulasi komisi tetap tersimpan Rp 25.000');
 
     // -------------------------------------------------------------
+    // TAHAP 7.5: Uji Komprehensif Skema 2 Tingkat (Admin 40%, Penjual 50%, Upline 10%)
+    // -------------------------------------------------------------
+    console.log('\n👥 TAHAP 7.5: Uji Sistem Bagi Hasil 2 Tingkat (Upline 10%, Penjual 50%, Admin 40%)');
+
+    const uplineCode = `upline${randomSuffix}`;
+    const downlineCode = `downline${randomSuffix}`;
+
+    // 1. Daftarkan Mitra Upline (Tier 2)
+    const resRegUpline = await fetch(`${BASE_URL}/api/mitra/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nama: `Mitra Upline ${randomSuffix}`,
+        whatsapp: `08112222${randomSuffix}`,
+        rekening_bank: `BCA 11112222 a.n Upline ${randomSuffix}`,
+        custom_ref: uplineCode
+      })
+    });
+    assert(resRegUpline.status === 200, 'Pendaftaran Mitra Upline berhasil (200 OK)');
+
+    // 2. Daftarkan Mitra Binaan (Tier 1) yang diajak oleh Mitra Upline
+    const resRegDownline = await fetch(`${BASE_URL}/api/mitra/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        nama: `Mitra Binaan ${randomSuffix}`,
+        whatsapp: `08113333${randomSuffix}`,
+        rekening_bank: `Mandiri 33334444 a.n Binaan ${randomSuffix}`,
+        custom_ref: downlineCode,
+        upline_ref: uplineCode
+      })
+    });
+    assert(resRegDownline.status === 200, 'Pendaftaran Mitra Binaan dengan Upline berhasil (200 OK)');
+    const downlineData = await resRegDownline.json();
+    assert(downlineData.mitra.upline_ref === uplineCode, `Mitra Binaan terverifikasi terhubung ke upline: ${uplineCode}`);
+
+    // 3. Pembeli berbelanja menggunakan link referral Mitra Binaan
+    const pembeliTier2Payload = {
+      pembeli_nama: `Pembeli Melalui Binaan ${randomSuffix}`,
+      pembeli_email: `pembeli_tier2_${randomSuffix}@gmail.com`,
+      pembeli_wa: `08115555${randomSuffix}`
+    };
+
+    const resCreateOrderTier2 = await fetch(`${BASE_URL}/api/orders/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cookie': `ref=${downlineCode}`
+      },
+      body: JSON.stringify(pembeliTier2Payload)
+    });
+    assert(resCreateOrderTier2.status === 200, 'Pesanan lewat link Mitra Binaan berhasil dibuat');
+    const orderTier2Created = await resCreateOrderTier2.json();
+    const orderTier2Id = orderTier2Created.order_id;
+
+    // Periksa rincian order di database
+    const dbOrderTier2 = Orders.getById(orderTier2Id);
+    assert(dbOrderTier2.ref_code === downlineCode, 'Order tercatat dengan kode penjual langsung (downline)');
+    assert(dbOrderTier2.komisi_mitra === 25000, 'Komisi penjual langsung diset 50% = Rp 25.000');
+    assert(dbOrderTier2.upline_ref === uplineCode, 'Order tercatat otomatis memiliki upline terhubung');
+    assert(dbOrderTier2.komisi_upline === 5000, 'Komisi upline diset 10% = Rp 5.000');
+    assert(dbOrderTier2.harga - dbOrderTier2.komisi_mitra - dbOrderTier2.komisi_upline === 20000, 'Bagian bersih Admin terverifikasi 40% = Rp 20.000');
+
+    // 4. Konfirmasi Pelunasan Order Tier 2
+    const resSimulateTier2 = await fetch(`${BASE_URL}/api/orders/${orderTier2Id}/simulate-pay`, {
+      method: 'POST'
+    });
+    assert(resSimulateTier2.status === 200, 'Pelunasan order berhasil dikonfirmasi');
+
+    // 5. Verifikasi Saldo Mitra Penjual (Downline) mendapat Rp 25.000 (50%)
+    const resDownlineProfile = await fetch(`${BASE_URL}/api/mitra/${downlineCode}`);
+    const downlineProfileData = await resDownlineProfile.json();
+    assert(downlineProfileData.mitra.saldo_tersedia === 25000, `Saldo Penjual Langsung pas Rp 25.000 (Aktual: Rp ${downlineProfileData.mitra.saldo_tersedia})`);
+    assert(downlineProfileData.mitra.total_terjual === 1, 'Total buku terjual langsung penjual adalah 1');
+
+    // 6. Verifikasi Saldo Mitra Upline mendapat Rp 5.000 (10%)
+    const resUplineProfile = await fetch(`${BASE_URL}/api/mitra/${uplineCode}`);
+    const uplineProfileData = await resUplineProfile.json();
+    assert(uplineProfileData.mitra.saldo_tersedia === 5000, `Saldo Upline Pasif Income pas Rp 5.000 (Aktual: Rp ${uplineProfileData.mitra.saldo_tersedia})`);
+    assert(uplineProfileData.mitra.total_tim === 1, 'Jumlah tim binaan terverifikasi 1 mitra');
+    assert(uplineProfileData.mitra.total_tim_terjual === 1, 'Jumlah transaksi tim binaan terverifikasi 1');
+    assert(uplineProfileData.upline_orders.length >= 1, 'Riwayat transaksi tim upline tercatat di dashboard');
+
+    // 7. Uji Penarikan Dana Pasif Income Upline (Withdraw Rp 5.000)
+    const resUplineWd = await fetch(`${BASE_URL}/api/mitra/${uplineCode}/withdraw`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nominal: 5000, catatan: 'Penarikan royalti tim binaan' })
+    });
+    assert(resUplineWd.status === 200, 'Upline berhasil menarik royalti tim binaan');
+    const resUplineAfterWd = await fetch(`${BASE_URL}/api/mitra/${uplineCode}`);
+    const uplineAfterWdData = await resUplineAfterWd.json();
+    assert(uplineAfterWdData.mitra.saldo_tersedia === 0, 'Saldo upline kembali menjadi Rp 0 setelah ditarik');
+
+    // -------------------------------------------------------------
     // TAHAP 8: Uji Ketahanan Validasi Input (Edge Cases)
     // -------------------------------------------------------------
     console.log('\n🛡️ TAHAP 8: Uji Ketahanan Validasi Input (Error Handling)');

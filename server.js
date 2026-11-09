@@ -82,7 +82,10 @@ const PRODUCT = {
   name: 'E-Book & Lembar Kerja 30 Hari: Membangun Usaha yang Bernilai',
   author: 'Karya Digital Gotong Royong',
   price: 50000,
-  commission: 25000, // 50% bagi hasil langsung ke mitra
+  commission: 25000,          // Kompatibilitas mundur
+  commission_mitra: 25000,    // Tier 1: 50% (Rp 25.000) bagi hasil langsung ke mitra penjual
+  commission_upline: 5000,    // Tier 2: 10% (Rp 5.000) bagi hasil ke upline yang mengajak mitra
+  admin_share: 20000,         // Admin: 40% (Rp 20.000) pemeliharaan sistem & produk
   file_path: path.join(__dirname, 'storage', 'products', 'membangun-yang-bernilai.pdf')
 };
 
@@ -230,7 +233,10 @@ app.get('/api/product-info', (req, res) => {
       id: PRODUCT.id,
       name: PRODUCT.name,
       price: PRODUCT.price,
-      commission: PRODUCT.commission
+      commission: PRODUCT.commission,
+      commission_mitra: PRODUCT.commission_mitra,
+      commission_upline: PRODUCT.commission_upline,
+      admin_share: PRODUCT.admin_share
     },
     active_ref: mitraInfo,
     doku_ready: dokuCfg.isConfigured
@@ -240,7 +246,7 @@ app.get('/api/product-info', (req, res) => {
 // Ringkasan Publik Platform Gotong Royong
 app.get('/api/public-summary', (req, res) => {
   const totalMitra = db.prepare('SELECT COUNT(*) as count FROM mitra').get().count;
-  const totalOrders = db.prepare("SELECT COUNT(*) as count, SUM(harga) as omzet, SUM(komisi_mitra) as komisi FROM orders WHERE status = 'PAID'").get();
+  const totalOrders = db.prepare("SELECT COUNT(*) as count, SUM(harga) as omzet, SUM(komisi_mitra + komisi_upline) as komisi FROM orders WHERE status = 'PAID'").get();
 
   res.json({
     total_mitra: totalMitra,
@@ -252,13 +258,17 @@ app.get('/api/public-summary', (req, res) => {
 
 // Pendaftaran Mitra Baru
 app.post('/api/mitra/register', (req, res) => {
-  const { nama, whatsapp, rekening_bank, custom_ref } = req.body;
+  const { nama, whatsapp, rekening_bank, custom_ref, upline_ref } = req.body;
   if (!nama || !whatsapp || !rekening_bank) {
     return res.status(400).json({ error: 'Nama, No WhatsApp, dan Data Rekening wajib diisi lengkap.' });
   }
 
+  // Deteksi upline dari form body, query/currentRef, atau cookie
+  const cookies = parseCookies(req);
+  const targetUpline = upline_ref || req.currentRef || cookies['ref'] || cookies['ref_code'] || null;
+
   try {
-    const newMitra = Mitra.create(nama, whatsapp, rekening_bank, custom_ref);
+    const newMitra = Mitra.create(nama, whatsapp, rekening_bank, custom_ref, targetUpline);
     res.json({
       success: true,
       message: 'Pendaftaran mitra gotong royong berhasil!',
@@ -269,7 +279,7 @@ app.post('/api/mitra/register', (req, res) => {
   }
 });
 
-// Ambil Data Profil & Statistik Mitra
+// Ambil Data Profil & Statistik Mitra (Termasuk Tim Binaan / Tier 2)
 app.get('/api/mitra/:ref_code', (req, res) => {
   const cleanRef = req.params.ref_code.toLowerCase();
   const mitra = Mitra.getByRef(cleanRef);
@@ -277,8 +287,24 @@ app.get('/api/mitra/:ref_code', (req, res) => {
     return res.status(404).json({ error: 'Mitra tidak ditemukan.' });
   }
 
-  const orders = Orders.getByRef(cleanRef);
-  const paidOrders = orders.filter(o => o.status === 'PAID');
+  const directOrders = Orders.getByRef(cleanRef);
+  const paidDirectOrders = directOrders.filter(o => o.status === 'PAID');
+
+  const uplineOrders = Orders.getUplineOrders ? Orders.getUplineOrders(cleanRef) : [];
+  const paidUplineOrders = uplineOrders.filter(o => o.status === 'PAID');
+
+  const downlines = Mitra.getDownlines ? Mitra.getDownlines(cleanRef) : [];
+
+  let uplineInfo = null;
+  if (mitra.upline_ref) {
+    const uplineMitra = Mitra.getByRef(mitra.upline_ref);
+    if (uplineMitra) {
+      uplineInfo = { nama: uplineMitra.nama, ref_code: uplineMitra.ref_code };
+    }
+  }
+
+  const totalKomisiLangsung = paidDirectOrders.reduce((sum, o) => sum + (o.komisi_mitra || 0), 0);
+  const totalKomisiTim = paidUplineOrders.reduce((sum, o) => sum + (o.komisi_upline || 0), 0);
 
   res.json({
     mitra: {
@@ -287,17 +313,39 @@ app.get('/api/mitra/:ref_code', (req, res) => {
       nama: mitra.nama,
       whatsapp: mitra.whatsapp,
       rekening_bank: mitra.rekening_bank,
+      upline_ref: mitra.upline_ref,
+      upline_info: uplineInfo,
       total_klik: mitra.total_klik,
       total_komisi: mitra.total_komisi,
       saldo_tersedia: mitra.saldo_tersedia,
-      total_terjual: paidOrders.length,
+      total_terjual: paidDirectOrders.length,
+      total_tim: downlines.length,
+      total_tim_terjual: paidUplineOrders.length,
+      komisi_langsung: totalKomisiLangsung,
+      komisi_tim: totalKomisiTim,
       created_at: mitra.created_at
     },
-    orders: orders.map(o => ({
+    downlines: downlines.map(d => ({
+      nama: d.nama,
+      ref_code: d.ref_code,
+      created_at: d.created_at
+    })),
+    orders: directOrders.map(o => ({
       order_id: o.order_id,
+      type: 'DIRECT',
       pembeli_nama: o.pembeli_nama.substring(0, 3) + '***',
       harga: o.harga,
       komisi: o.komisi_mitra,
+      status: o.status,
+      created_at: o.created_at
+    })),
+    upline_orders: uplineOrders.map(o => ({
+      order_id: o.order_id,
+      type: 'UPLINE',
+      seller_ref: o.ref_code,
+      pembeli_nama: o.pembeli_nama.substring(0, 3) + '***',
+      harga: o.harga,
+      komisi: o.komisi_upline,
       status: o.status,
       created_at: o.created_at
     }))
@@ -326,7 +374,7 @@ app.post('/api/mitra/:ref_code/withdraw', (req, res) => {
   }
 });
 
-// Buat Pesanan Baru
+// Buat Pesanan Baru (Mendukung Pembagian Keuntungan 2 Tingkat)
 app.post('/api/orders/create', (req, res) => {
   const { pembeli_nama, pembeli_email, pembeli_wa } = req.body;
   if (!pembeli_nama || !pembeli_email || !pembeli_wa) {
@@ -336,6 +384,27 @@ app.post('/api/orders/create', (req, res) => {
   const cookies = parseCookies(req);
   const ref_code = req.body.ref_code || req.currentRef || cookies['ref'] || cookies['ref_code'] || null;
 
+  let komisi_mitra = 0;
+  let upline_ref = null;
+  let komisi_upline = 0;
+
+  if (ref_code) {
+    const directMitra = Mitra.getByRef(ref_code);
+    if (directMitra) {
+      // Tier 1: Mitra Penjual Langsung dapat 50% (Rp 25.000)
+      komisi_mitra = PRODUCT.commission_mitra;
+
+      // Tier 2: Upline yang mengajak mitra ini dapat 10% (Rp 5.000)
+      if (directMitra.upline_ref) {
+        const uplineMitra = Mitra.getByRef(directMitra.upline_ref);
+        if (uplineMitra) {
+          upline_ref = uplineMitra.ref_code;
+          komisi_upline = PRODUCT.commission_upline;
+        }
+      }
+    }
+  }
+
   const order = Orders.create({
     pembeli_nama,
     pembeli_email,
@@ -344,7 +413,9 @@ app.post('/api/orders/create', (req, res) => {
     product_name: PRODUCT.name,
     harga: PRODUCT.price,
     ref_code: ref_code,
-    komisi_mitra: ref_code ? PRODUCT.commission : 0
+    komisi_mitra: komisi_mitra,
+    upline_ref: upline_ref,
+    komisi_upline: komisi_upline
   });
 
   res.json({

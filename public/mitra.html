@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Portal Mitra Gotong Royong — Bagikan Link & Dapatkan Komisi 50%</title>
+  <title>Portal Mitra Gotong Royong — Komisi 50% Langsung & 10% Royalti Tim Upline</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -21,7 +21,7 @@
         </a>
         <div>
           <a href="/" class="font-extrabold text-slate-900 tracking-tight text-lg">GotongRoyong<span class="text-emerald-600">.Digital</span></a>
-          <span class="text-xs bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded-full ml-2">Portal Mitra</span>
+          <span class="text-xs bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded-full ml-2">Portal Kemitraan 2 Tingkat</span>
         </div>
       </div>
       <div>
@@ -40,11 +40,30 @@
         <span>🤝 Program Gotong Royong Digital Resmi</span>
       </div>
       <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 leading-tight">
-        Bagikan Manfaat Karya Digital, Dapatkan <span class="text-emerald-700">Komisi 50%</span> Tiap Penjualan
+        Bagi Hasil Adil: <span class="text-emerald-700">Komisi 50%</span> Langsung + <span class="text-teal-700">10% Royalti Tim</span>
       </h1>
       <p class="text-slate-600 text-sm sm:text-base mt-2">
-        Cukup bagikan tautan referral Anda ke WhatsApp, grup, atau media sosial. Setiap ada pembeli buku seharga <strong>Rp 50.000</strong>, Anda langsung berhak atas bagi hasil <strong>Rp 25.000</strong>!
+        Sistem kemitraan berbasis produk riil seharga <strong>Rp 50.000</strong>. Anda mendapat <strong>Rp 25.000 (50%)</strong> untuk penjualan pribadi, dan <strong>Rp 5.000 (10%)</strong> pasif income untuk setiap penjualan yang dilakukan oleh mitra binaan Anda!
       </p>
+
+      <!-- Rincian Pembagian Keuntungan Transparan -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-3 mt-6 text-left max-w-xl mx-auto">
+        <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
+          <div class="text-[10px] sm:text-xs font-bold text-emerald-800 uppercase">Tier 1: Penjual</div>
+          <div class="text-lg sm:text-xl font-extrabold text-emerald-700">50%</div>
+          <div class="text-xs text-emerald-900 font-semibold">Rp 25.000 / buku</div>
+        </div>
+        <div class="p-3 bg-teal-50 rounded-2xl border border-teal-200">
+          <div class="text-[10px] sm:text-xs font-bold text-teal-800 uppercase">Tier 2: Upline Tim</div>
+          <div class="text-lg sm:text-xl font-extrabold text-teal-700">10%</div>
+          <div class="text-xs text-teal-900 font-semibold">Rp 5.000 / buku</div>
+        </div>
+        <div class="p-3 bg-slate-100 rounded-2xl border border-slate-200">
+          <div class="text-[10px] sm:text-xs font-bold text-slate-600 uppercase">Platform & Admin</div>
+          <div class="text-lg sm:text-xl font-extrabold text-slate-800">40%</div>
+          <div class="text-xs text-slate-700 font-semibold">Rp 20.000 / buku</div>
+        </div>
+      </div>
     </div>
 
     <!-- Tampilan 1: Form Pendaftaran Mitra Baru (Jika Belum Login/Punya Kode) -->
@@ -53,8 +72,14 @@
         <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-700 flex items-center justify-center text-xl font-bold">1</div>
         <div>
           <h3 class="font-bold text-slate-900 text-lg">Daftar Jadi Mitra Gotong Royong</h3>
-          <p class="text-xs text-slate-500">Pendaftaran 100% Gratis tanpa biaya apa pun.</p>
+          <p class="text-xs text-slate-500">Pendaftaran 100% Gratis tanpa biaya modal apa pun.</p>
         </div>
+      </div>
+
+      <!-- Banner Terdeteksi Upline -->
+      <div id="uplineBanner" class="hidden mb-4 p-3 bg-teal-50 border border-teal-200 rounded-xl text-xs text-teal-900 flex items-center space-x-2">
+        <span class="text-lg">🤝</span>
+        <span>Anda diajak bergabung oleh mitra: <strong id="uplineName" class="font-bold">Upline</strong>. Anda akan terdaftar di bawah bimbingan tim beliau.</span>
       </div>
 
       <form id="formDaftar" class="space-y-4">
@@ -77,10 +102,16 @@
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kode Referral Kustom (Opsional)</label>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kode Referral Kustom Anda (Opsional)</label>
           <input type="text" id="regCustomRef" placeholder="Contoh: fauzi (huruf & angka kecil saja)"
             class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
           <p class="text-[11px] text-slate-400 mt-1">Kosongkan jika ingin dibuatkan otomatis oleh sistem.</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Kode Referral Upline / Yang Mengajak (Opsional)</label>
+          <input type="text" id="regUplineRef" placeholder="Kode mitra yang mengajak Anda (jika ada)"
+            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
         </div>
 
         <button type="submit" id="btnDaftar"
@@ -111,6 +142,7 @@
           <div>
             <div class="flex items-center space-x-2">
               <span class="text-xs bg-emerald-600/60 border border-emerald-400/40 px-2.5 py-0.5 rounded-full font-bold">Mitra Resmi Terdaftar</span>
+              <span id="dashUplineBadge" class="hidden text-xs bg-teal-600/60 border border-teal-300/40 px-2.5 py-0.5 rounded-full"></span>
             </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold mt-1">Halo, <span id="dashNama">Nama Mitra</span> 👋</h2>
             <p class="text-emerald-200 text-xs sm:text-sm mt-1">Kode Referral Anda: <strong class="text-amber-300 font-mono text-base" id="dashRefCode">kodererf</strong></p>
@@ -122,25 +154,53 @@
           </button>
         </div>
 
-        <!-- Box Tautan Referral -->
-        <div class="mt-6 bg-black/25 backdrop-blur-md rounded-2xl p-4 border border-white/10">
-          <label class="block text-xs font-bold uppercase tracking-wider text-amber-300 mb-1">Tautan Referral Anda untuk Dibagikan:</label>
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-            <input type="text" id="dashLink" readonly
-              class="w-full bg-white/10 text-white font-mono text-sm px-4 py-2.5 rounded-xl border border-white/20 select-all outline-none">
-            <button id="btnCopyLink"
-              class="bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold px-5 py-2.5 rounded-xl text-sm transition shrink-0 shadow-sm flex items-center justify-center space-x-1">
-              <span>📋 Salin Link</span>
-            </button>
-            <button id="btnShareWa"
-              class="bg-emerald-500 hover:bg-emerald-400 text-white font-bold px-5 py-2.5 rounded-xl text-sm transition shrink-0 shadow-sm flex items-center justify-center space-x-1">
-              <span>📲 Share ke WA</span>
-            </button>
+        <!-- 2 Pilihan Tautan Referral: Jual Produk & Ajak Mitra -->
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Box 1: Link Penjualan Buku (Komisi 50% = Rp 25.000) -->
+          <div class="bg-black/25 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-amber-300">📖 1. Link Jual Buku Langsung</span>
+                <span class="text-[10px] bg-emerald-500/30 text-emerald-200 font-bold px-2 py-0.5 rounded-full">Komisi 50% (Rp 25.000)</span>
+              </div>
+              <p class="text-[11px] text-slate-300 mb-2">Sebarkan link ini ke calon pembeli buku kerja 30 hari.</p>
+              <input type="text" id="dashLinkBuku" readonly
+                class="w-full bg-white/10 text-white font-mono text-xs px-3 py-2 rounded-xl border border-white/20 select-all outline-none mb-2">
+            </div>
+            <div class="flex items-center space-x-2 pt-1">
+              <button id="btnCopyLinkBuku" class="flex-1 bg-amber-400 hover:bg-amber-300 text-amber-950 font-bold py-2 px-3 rounded-xl text-xs transition text-center shadow-sm">
+                📋 Salin Link Buku
+              </button>
+              <button id="btnShareWaBuku" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-white font-bold py-2 px-3 rounded-xl text-xs transition text-center shadow-sm">
+                📲 Share ke WA
+              </button>
+            </div>
+          </div>
+
+          <!-- Box 2: Link Ajak Mitra / Upline (Komisi Pasif 10% = Rp 5.000) -->
+          <div class="bg-black/25 backdrop-blur-md rounded-2xl p-4 border border-white/10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-teal-300">👥 2. Link Ajak Rekan Jadi Mitra</span>
+                <span class="text-[10px] bg-teal-500/30 text-teal-200 font-bold px-2 py-0.5 rounded-full">Royalti 10% (Rp 5.000)</span>
+              </div>
+              <p class="text-[11px] text-slate-300 mb-2">Ajak rekan berjualan; Anda dapat Rp 5.000 dari setiap buku mereka!</p>
+              <input type="text" id="dashLinkMitra" readonly
+                class="w-full bg-white/10 text-white font-mono text-xs px-3 py-2 rounded-xl border border-white/20 select-all outline-none mb-2">
+            </div>
+            <div class="flex items-center space-x-2 pt-1">
+              <button id="btnCopyLinkMitra" class="flex-1 bg-teal-400 hover:bg-teal-300 text-teal-950 font-bold py-2 px-3 rounded-xl text-xs transition text-center shadow-sm">
+                📋 Salin Link Mitra
+              </button>
+              <button id="btnShareWaMitra" class="flex-1 bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-3 rounded-xl text-xs transition text-center shadow-sm">
+                📲 Ajak via WA
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Kartu Metrik Kinerja -->
+      <!-- Kartu Metrik Kinerja 4 Kolom -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
           <div class="text-xs text-slate-500 font-bold uppercase">Total Klik Link</div>
@@ -149,15 +209,15 @@
         </div>
 
         <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <div class="text-xs text-slate-500 font-bold uppercase">Buku Terjual</div>
+          <div class="text-xs text-slate-500 font-bold uppercase">Penjualan Langsung</div>
           <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 mt-1" id="dashTerjual">0</div>
-          <p class="text-[11px] text-slate-400 mt-1">Transaksi sukses lewat link</p>
+          <p class="text-[11px] text-slate-500 mt-1 font-semibold" id="dashKomisiLangsung">Rp 0 (50%)</p>
         </div>
 
-        <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
-          <div class="text-xs text-slate-500 font-bold uppercase">Total Komisi Didapat</div>
-          <div class="text-2xl sm:text-3xl font-extrabold text-slate-800 mt-1" id="dashTotalKomisi">Rp 0</div>
-          <p class="text-[11px] text-slate-400 mt-1">Rp 25.000 / transaksi</p>
+        <div class="bg-white p-5 rounded-2xl border border-teal-200 bg-teal-50/30 shadow-sm">
+          <div class="text-xs text-teal-800 font-bold uppercase">Tim Binaan (Tier 2)</div>
+          <div class="text-2xl sm:text-3xl font-extrabold text-teal-700 mt-1" id="dashTim">0</div>
+          <p class="text-[11px] text-teal-700 mt-1 font-semibold" id="dashKomisiTim">Rp 0 (10%)</p>
         </div>
 
         <div class="bg-white p-5 rounded-2xl border border-emerald-200 bg-emerald-50/40 shadow-sm">
@@ -169,11 +229,11 @@
         </div>
       </div>
 
-      <!-- Riwayat Transaksi Penjualan -->
+      <!-- Riwayat Transaksi Penjualan Gabungan -->
       <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
         <h3 class="text-lg font-bold text-slate-900 mb-4 flex items-center justify-between">
-          <span>Riwayat Penjualan dari Link Anda</span>
-          <span class="text-xs font-normal text-slate-500">Data real-time otomatis terverifikasi</span>
+          <span>Riwayat Komisi Penjualan & Tim Binaan</span>
+          <span class="text-xs font-normal text-slate-500">Real-time otomatis terverifikasi</span>
         </h3>
 
         <div class="overflow-x-auto">
@@ -181,9 +241,10 @@
             <thead class="bg-slate-100 text-slate-700 text-xs uppercase font-bold">
               <tr>
                 <th class="px-4 py-3 rounded-l-xl">Order ID</th>
+                <th class="px-4 py-3">Jenis Bagi Hasil</th>
                 <th class="px-4 py-3">Nama Pembeli</th>
-                <th class="px-4 py-3">Harga Buku</th>
-                <th class="px-4 py-3">Komisi Anda (50%)</th>
+                <th class="px-4 py-3">Harga</th>
+                <th class="px-4 py-3">Komisi Anda</th>
                 <th class="px-4 py-3">Status</th>
                 <th class="px-4 py-3 rounded-r-xl">Waktu Transaksi</th>
               </tr>
@@ -199,19 +260,57 @@
         </div>
       </div>
 
+      <!-- Daftar Tim Binaan yang Bergabung -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <h3 class="text-lg font-bold text-slate-900 mb-2 flex items-center justify-between">
+          <span>Daftar Tim Binaan yang Anda Rekrut</span>
+          <span class="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200" id="dashTotalDownlineBadge">0 Mitra</span>
+        </h3>
+        <p class="text-xs text-slate-500 mb-4">Setiap mitra binaan Anda berhasil menjual 1 buku, Anda otomatis menerima pasif income <strong>Rp 5.000</strong>!</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 text-slate-700 text-xs uppercase font-bold">
+              <tr>
+                <th class="px-4 py-3 rounded-l-xl">Nama Mitra Binaan</th>
+                <th class="px-4 py-3">Kode Referral</th>
+                <th class="px-4 py-3">Status Binaan</th>
+                <th class="px-4 py-3 rounded-r-xl">Tanggal Bergabung</th>
+              </tr>
+            </thead>
+            <tbody id="dashDownlineBody" class="divide-y divide-slate-100 text-slate-600 text-xs">
+              <!-- Tim binaan diinjeksi lewat JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div id="emptyDownlineNotice" class="py-6 text-center text-slate-400 text-xs">
+          Belum ada rekan yang mendaftar melalui link ajakan Anda. Bagikan tautan kemitraan Anda sekarang!
+        </div>
+      </div>
+
     </div>
 
   </main>
 
   <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs">
     <div class="max-w-6xl mx-auto px-4">
-      <p>© 2026 GotongRoyong.Digital — Solusi Mandiri Bagi Hasil Karya Digital</p>
+      <p>© 2026 GotongRoyong.Digital — Solusi Mandiri Bagi Hasil Karya Digital (50% Penjual - 10% Upline - 40% Admin)</p>
     </div>
   </footer>
 
   <script>
     const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:3000';
     let activeMitraRef = localStorage.getItem('gr_active_mitra') || null;
+
+    // Deteksi query param ?ref=xxx saat membuka halaman pendaftaran mitra
+    const urlParams = new URLSearchParams(window.location.search);
+    const paramRef = urlParams.get('ref');
+    if (paramRef) {
+      document.getElementById('regUplineRef').value = paramRef;
+      document.getElementById('uplineName').textContent = paramRef;
+      document.getElementById('uplineBanner').classList.remove('hidden');
+    }
 
     // Load Mitra Profile & Dashboard
     async function fetchMitraDashboard(ref) {
@@ -232,33 +331,60 @@
         document.getElementById('dashRefCode').textContent = data.mitra.ref_code;
         document.getElementById('dashRekening').textContent = data.mitra.rekening_bank;
         
-        const fullLink = `${API_BASE}/?ref=${data.mitra.ref_code}`;
-        document.getElementById('dashLink').value = fullLink;
+        // Status Upline
+        const uplineBadge = document.getElementById('dashUplineBadge');
+        if (data.mitra.upline_ref) {
+          uplineBadge.textContent = 'Diajak oleh: ' + (data.mitra.upline_info?.nama || data.mitra.upline_ref);
+          uplineBadge.classList.remove('hidden');
+        } else {
+          uplineBadge.classList.add('hidden');
+        }
 
+        // Tautan Referral
+        const fullLinkBuku = `${API_BASE}/?ref=${data.mitra.ref_code}`;
+        const fullLinkMitra = `${API_BASE}/mitra?ref=${data.mitra.ref_code}`;
+        document.getElementById('dashLinkBuku').value = fullLinkBuku;
+        document.getElementById('dashLinkMitra').value = fullLinkMitra;
+
+        // Metrik
         document.getElementById('dashKlik').textContent = data.mitra.total_klik;
-        
-        const paidOrders = data.orders.filter(o => o.status === 'PAID');
-        document.getElementById('dashTerjual').textContent = paidOrders.length;
-        document.getElementById('dashTotalKomisi').textContent = 'Rp ' + Number(data.mitra.total_komisi).toLocaleString('id-ID');
+        document.getElementById('dashTerjual').textContent = data.mitra.total_terjual + ' Buku';
+        document.getElementById('dashKomisiLangsung').textContent = 'Rp ' + Number(data.mitra.komisi_langsung || 0).toLocaleString('id-ID') + ' (50%)';
+
+        document.getElementById('dashTim').textContent = data.mitra.total_tim + ' Mitra';
+        document.getElementById('dashKomisiTim').textContent = 'Rp ' + Number(data.mitra.komisi_tim || 0).toLocaleString('id-ID') + ' (' + (data.mitra.total_tim_terjual || 0) + ' Terjual)';
+
         document.getElementById('dashSaldo').textContent = 'Rp ' + Number(data.mitra.saldo_tersedia).toLocaleString('id-ID');
 
-        // Populate Table
+        // Gabung Riwayat Transaksi (Direct + Upline)
+        const allTransactions = [
+          ...data.orders.map(o => ({ ...o, category: 'DIRECT' })),
+          ...data.upline_orders.map(o => ({ ...o, category: 'UPLINE' }))
+        ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
         const tbody = document.getElementById('dashTableBody');
         tbody.innerHTML = '';
-        if (data.orders.length > 0) {
+        if (allTransactions.length > 0) {
           document.getElementById('emptyNotice').classList.add('hidden');
-          data.orders.forEach(o => {
+          allTransactions.forEach(o => {
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-50 transition';
+
+            const isDirect = o.category === 'DIRECT';
+            const catBadge = isDirect
+              ? '<span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full text-[10px]">PENJUALAN LANGSUNG (50%)</span>'
+              : `<span class="bg-teal-100 text-teal-800 font-bold px-2 py-0.5 rounded-full text-[10px]">TIM BINAAN (${o.seller_ref}) (10%)</span>`;
+
             const statusBadge = o.status === 'PAID' 
-              ? '<span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full text-[10px]">LUNAS (+Rp 25.000)</span>'
+              ? `<span class="bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full text-[10px]">LUNAS (+Rp ${Number(o.komisi).toLocaleString('id-ID')})</span>`
               : '<span class="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-full text-[10px]">MENUNGGU BAYAR</span>';
 
             tr.innerHTML = `
               <td class="px-4 py-3 font-mono font-bold text-slate-800">${o.order_id}</td>
+              <td class="px-4 py-3">${catBadge}</td>
               <td class="px-4 py-3">${o.pembeli_nama}</td>
               <td class="px-4 py-3">Rp ${Number(o.harga).toLocaleString('id-ID')}</td>
-              <td class="px-4 py-3 font-bold text-emerald-700">Rp ${Number(o.komisi).toLocaleString('id-ID')}</td>
+              <td class="px-4 py-3 font-bold ${isDirect ? 'text-emerald-700' : 'text-teal-700'}">Rp ${Number(o.komisi).toLocaleString('id-ID')}</td>
               <td class="px-4 py-3">${statusBadge}</td>
               <td class="px-4 py-3 text-slate-400">${new Date(o.created_at).toLocaleString('id-ID')}</td>
             `;
@@ -266,6 +392,28 @@
           });
         } else {
           document.getElementById('emptyNotice').classList.remove('hidden');
+        }
+
+        // Daftar Downline
+        const downlineBody = document.getElementById('dashDownlineBody');
+        downlineBody.innerHTML = '';
+        document.getElementById('dashTotalDownlineBadge').textContent = (data.downlines ? data.downlines.length : 0) + ' Mitra';
+
+        if (data.downlines && data.downlines.length > 0) {
+          document.getElementById('emptyDownlineNotice').classList.add('hidden');
+          data.downlines.forEach(d => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition';
+            tr.innerHTML = `
+              <td class="px-4 py-3 font-bold text-slate-800">${d.nama}</td>
+              <td class="px-4 py-3 font-mono text-xs text-teal-700 font-bold">${d.ref_code}</td>
+              <td class="px-4 py-3"><span class="bg-teal-50 text-teal-800 px-2 py-0.5 rounded text-[10px] font-semibold">Aktif Berjualan (10% Pasif)</span></td>
+              <td class="px-4 py-3 text-slate-400">${new Date(d.created_at).toLocaleDateString('id-ID')}</td>
+            `;
+            downlineBody.appendChild(tr);
+          });
+        } else {
+          document.getElementById('emptyDownlineNotice').classList.remove('hidden');
         }
 
         document.getElementById('sectionRegister').classList.add('hidden');
@@ -291,7 +439,8 @@
         nama: document.getElementById('regNama').value,
         whatsapp: document.getElementById('regWa').value,
         rekening_bank: document.getElementById('regRekening').value,
-        custom_ref: document.getElementById('regCustomRef').value
+        custom_ref: document.getElementById('regCustomRef').value,
+        upline_ref: document.getElementById('regUplineRef').value
       };
 
       try {
@@ -327,18 +476,33 @@
       showRegister();
     });
 
-    // Copy Link
-    document.getElementById('btnCopyLink').addEventListener('click', () => {
-      const linkInput = document.getElementById('dashLink');
+    // Copy Link Buku
+    document.getElementById('btnCopyLinkBuku').addEventListener('click', () => {
+      const linkInput = document.getElementById('dashLinkBuku');
       linkInput.select();
       navigator.clipboard.writeText(linkInput.value);
-      alert('Tautan referral berhasil disalin ke clipboard!');
+      alert('Tautan penjualan buku berhasil disalin! (Komisi Anda 50% = Rp 25.000 per transaksi)');
     });
 
-    // Share WA
-    document.getElementById('btnShareWa').addEventListener('click', () => {
-      const link = document.getElementById('dashLink').value;
+    // Share WA Buku
+    document.getElementById('btnShareWaBuku').addEventListener('click', () => {
+      const link = document.getElementById('dashLinkBuku').value;
       const text = `Halo rekan-rekan! Mau belajar membangun usaha yang bernilai dari nol dengan panduan lembar kerja 30 hari aplikatif? Yuk baca E-Book praktis ini: ${link}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+    });
+
+    // Copy Link Mitra
+    document.getElementById('btnCopyLinkMitra').addEventListener('click', () => {
+      const linkInput = document.getElementById('dashLinkMitra');
+      linkInput.select();
+      navigator.clipboard.writeText(linkInput.value);
+      alert('Tautan ajak mitra berhasil disalin! (Anda dapat pasif income 10% = Rp 5.000 per transaksi yang mereka hasilkan)');
+    });
+
+    // Share WA Mitra
+    document.getElementById('btnShareWaMitra').addEventListener('click', () => {
+      const link = document.getElementById('dashLinkMitra');
+      const text = `Yuk gabung menjadi mitra Gotong Royong Digital! Tanpa modal sepeser pun, cukup bagikan link e-book langsung dapat bagi hasil 50% (Rp 25.000/penjualan). Daftar di sini: ${link.value}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     });
 

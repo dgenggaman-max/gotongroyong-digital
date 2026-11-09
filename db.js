@@ -14,6 +14,7 @@ db.exec(`
     nama TEXT NOT NULL,
     whatsapp TEXT NOT NULL,
     rekening_bank TEXT NOT NULL,
+    upline_ref TEXT,
     total_klik INTEGER DEFAULT 0,
     total_komisi INTEGER DEFAULT 0,
     saldo_tersedia INTEGER DEFAULT 0,
@@ -31,6 +32,8 @@ db.exec(`
     harga INTEGER NOT NULL,
     ref_code TEXT,
     komisi_mitra INTEGER DEFAULT 0,
+    upline_ref TEXT,
+    komisi_upline INTEGER DEFAULT 0,
     status TEXT DEFAULT 'PENDING',
     payment_url TEXT,
     download_token TEXT UNIQUE NOT NULL,
@@ -49,13 +52,14 @@ db.exec(`
 `);
 
 // Migrasi Kolom Tambahan jika belum ada
-try {
-  db.exec('ALTER TABLE orders ADD COLUMN payment_url TEXT;');
-} catch (e) {}
+try { db.exec('ALTER TABLE orders ADD COLUMN payment_url TEXT;'); } catch (e) {}
+try { db.exec('ALTER TABLE mitra ADD COLUMN upline_ref TEXT;'); } catch (e) {}
+try { db.exec('ALTER TABLE orders ADD COLUMN upline_ref TEXT;'); } catch (e) {}
+try { db.exec('ALTER TABLE orders ADD COLUMN komisi_upline INTEGER DEFAULT 0;'); } catch (e) {}
 
 // Helpers Database
 const Mitra = {
-  create: (nama, whatsapp, rekening_bank, customRef = null) => {
+  create: (nama, whatsapp, rekening_bank, customRef = null, uplineRef = null) => {
     let ref_code = customRef
       ? customRef.toLowerCase().replace(/[^a-z0-9]/g, '')
       : (nama.toLowerCase().split(' ')[0] + Math.floor(100 + Math.random() * 900));
@@ -67,17 +71,33 @@ const Mitra = {
       check = db.prepare('SELECT id FROM mitra WHERE ref_code = ?').get(ref_code);
     }
 
+    // Validasi upline jika ada
+    let validUpline = null;
+    if (uplineRef) {
+      const cleanUpline = String(uplineRef).toLowerCase().trim();
+      if (cleanUpline !== ref_code) {
+        const uplineMitra = db.prepare('SELECT ref_code FROM mitra WHERE ref_code = ?').get(cleanUpline);
+        if (uplineMitra) {
+          validUpline = uplineMitra.ref_code;
+        }
+      }
+    }
+
     const now = new Date().toISOString();
     const stmt = db.prepare(`
-      INSERT INTO mitra (ref_code, nama, whatsapp, rekening_bank, created_at)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO mitra (ref_code, nama, whatsapp, rekening_bank, upline_ref, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
-    const info = stmt.run(ref_code, nama, whatsapp, rekening_bank, now);
-    return { id: info.lastInsertRowid, ref_code, nama, whatsapp, rekening_bank, created_at: now };
+    const info = stmt.run(ref_code, nama, whatsapp, rekening_bank, validUpline, now);
+    return { id: info.lastInsertRowid, ref_code, nama, whatsapp, rekening_bank, upline_ref: validUpline, created_at: now };
   },
 
   getByRef: (ref_code) => {
     return db.prepare('SELECT * FROM mitra WHERE ref_code = ?').get(ref_code);
+  },
+
+  getDownlines: (ref_code) => {
+    return db.prepare('SELECT id, ref_code, nama, whatsapp, created_at FROM mitra WHERE upline_ref = ? ORDER BY id DESC').all(ref_code);
   },
 
   incrementClick: (ref_code) => {
@@ -130,8 +150,9 @@ const Orders = {
       INSERT INTO orders (
         order_id, pembeli_nama, pembeli_email, pembeli_wa,
         product_id, product_name, harga, ref_code, komisi_mitra,
+        upline_ref, komisi_upline,
         status, download_token, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?)
     `);
 
     stmt.run(
@@ -144,6 +165,8 @@ const Orders = {
       data.harga,
       data.ref_code || null,
       data.komisi_mitra || 0,
+      data.upline_ref || null,
+      data.komisi_upline || 0,
       download_token,
       now
     );
@@ -163,6 +186,10 @@ const Orders = {
     return db.prepare('SELECT * FROM orders WHERE ref_code = ? ORDER BY id DESC').all(ref_code);
   },
 
+  getUplineOrders: (upline_ref) => {
+    return db.prepare('SELECT * FROM orders WHERE upline_ref = ? ORDER BY id DESC').all(upline_ref);
+  },
+
   setPaymentUrl: (order_id, payment_url) => {
     db.prepare('UPDATE orders SET payment_url = ? WHERE order_id = ?').run(payment_url, order_id);
     return Orders.getById(order_id);
@@ -179,9 +206,14 @@ const Orders = {
       WHERE order_id = ?
     `).run(now, order_id);
 
-    // Salurkan komisi ke mitra jika ada ref_code
+    // 1. Salurkan komisi ke mitra penjual langsung (Tier 1: 50% = Rp 25.000)
     if (order.ref_code && order.komisi_mitra > 0) {
       Mitra.addCommission(order.ref_code, order.komisi_mitra);
+    }
+
+    // 2. Salurkan komisi ke upline yang mereferalkan akun mitra ini (Tier 2: 10% = Rp 5.000)
+    if (order.upline_ref && order.komisi_upline > 0) {
+      Mitra.addCommission(order.upline_ref, order.komisi_upline);
     }
 
     return Orders.getById(order_id);
