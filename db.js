@@ -14,6 +14,9 @@ db.exec(`
     nama TEXT NOT NULL,
     whatsapp TEXT NOT NULL,
     rekening_bank TEXT NOT NULL,
+    bank_nama TEXT,
+    bank_nomor TEXT,
+    bank_pemilik TEXT,
     upline_ref TEXT,
     total_klik INTEGER DEFAULT 0,
     total_komisi INTEGER DEFAULT 0,
@@ -56,10 +59,13 @@ try { db.exec('ALTER TABLE orders ADD COLUMN payment_url TEXT;'); } catch (e) {}
 try { db.exec('ALTER TABLE mitra ADD COLUMN upline_ref TEXT;'); } catch (e) {}
 try { db.exec('ALTER TABLE orders ADD COLUMN upline_ref TEXT;'); } catch (e) {}
 try { db.exec('ALTER TABLE orders ADD COLUMN komisi_upline INTEGER DEFAULT 0;'); } catch (e) {}
+try { db.exec('ALTER TABLE mitra ADD COLUMN bank_nama TEXT;'); } catch (e) {}
+try { db.exec('ALTER TABLE mitra ADD COLUMN bank_nomor TEXT;'); } catch (e) {}
+try { db.exec('ALTER TABLE mitra ADD COLUMN bank_pemilik TEXT;'); } catch (e) {}
 
 // Helpers Database
 const Mitra = {
-  create: (nama, whatsapp, rekening_bank, customRef = null, uplineRef = null) => {
+  create: (nama, whatsapp, rekening_bank, customRef = null, uplineRef = null, bankData = {}) => {
     let ref_code = customRef
       ? customRef.toLowerCase().replace(/[^a-z0-9]/g, '')
       : (nama.toLowerCase().split(' ')[0] + Math.floor(100 + Math.random() * 900));
@@ -83,13 +89,28 @@ const Mitra = {
       }
     }
 
+    const bank_nama = bankData?.bank_nama || null;
+    const bank_nomor = bankData?.bank_nomor || null;
+    const bank_pemilik = bankData?.bank_pemilik || null;
+
     const now = new Date().toISOString();
     const stmt = db.prepare(`
-      INSERT INTO mitra (ref_code, nama, whatsapp, rekening_bank, upline_ref, created_at)
-      VALUES (?, ?, ?, ?, ?, ?)
+      INSERT INTO mitra (ref_code, nama, whatsapp, rekening_bank, bank_nama, bank_nomor, bank_pemilik, upline_ref, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
-    const info = stmt.run(ref_code, nama, whatsapp, rekening_bank, validUpline, now);
-    return { id: info.lastInsertRowid, ref_code, nama, whatsapp, rekening_bank, upline_ref: validUpline, created_at: now };
+    const info = stmt.run(ref_code, nama, whatsapp, rekening_bank, bank_nama, bank_nomor, bank_pemilik, validUpline, now);
+    return {
+      id: info.lastInsertRowid,
+      ref_code,
+      nama,
+      whatsapp,
+      rekening_bank,
+      bank_nama,
+      bank_nomor,
+      bank_pemilik,
+      upline_ref: validUpline,
+      created_at: now
+    };
   },
 
   getByRef: (ref_code) => {

@@ -258,9 +258,20 @@ app.get('/api/public-summary', (req, res) => {
 
 // Pendaftaran Mitra Baru
 app.post('/api/mitra/register', (req, res) => {
-  const { nama, whatsapp, rekening_bank, custom_ref, upline_ref } = req.body;
-  if (!nama || !whatsapp || !rekening_bank) {
-    return res.status(400).json({ error: 'Nama, No WhatsApp, dan Data Rekening wajib diisi lengkap.' });
+  const { nama, whatsapp, rekening_bank, bank_nama, bank_nomor, bank_pemilik, custom_ref, upline_ref } = req.body;
+
+  let finalRekening = (rekening_bank || '').trim();
+  let finalBankNama = (bank_nama || '').trim() || null;
+  let finalBankNomor = (bank_nomor || '').trim() || null;
+  let finalBankPemilik = (bank_pemilik || '').trim().toUpperCase() || null;
+
+  // Jika dikirim data rekening terstruktur, bentuk format rapi standar
+  if (finalBankNama && finalBankNomor && finalBankPemilik) {
+    finalRekening = `${finalBankNama} - ${finalBankNomor} a.n ${finalBankPemilik}`;
+  }
+
+  if (!nama || !whatsapp || !finalRekening) {
+    return res.status(400).json({ error: 'Nama, No WhatsApp, dan Data Rekening (Bank, No Rekening, Atas Nama) wajib diisi lengkap.' });
   }
 
   // Deteksi upline dari form body, query/currentRef, atau cookie
@@ -268,7 +279,14 @@ app.post('/api/mitra/register', (req, res) => {
   const targetUpline = upline_ref || req.currentRef || cookies['ref'] || cookies['ref_code'] || null;
 
   try {
-    const newMitra = Mitra.create(nama, whatsapp, rekening_bank, custom_ref, targetUpline);
+    const newMitra = Mitra.create(
+      nama,
+      whatsapp,
+      finalRekening,
+      custom_ref,
+      targetUpline,
+      { bank_nama: finalBankNama, bank_nomor: finalBankNomor, bank_pemilik: finalBankPemilik }
+    );
     res.json({
       success: true,
       message: 'Pendaftaran mitra gotong royong berhasil!',
@@ -313,6 +331,9 @@ app.get('/api/mitra/:ref_code', (req, res) => {
       nama: mitra.nama,
       whatsapp: mitra.whatsapp,
       rekening_bank: mitra.rekening_bank,
+      bank_nama: mitra.bank_nama,
+      bank_nomor: mitra.bank_nomor,
+      bank_pemilik: mitra.bank_pemilik,
       upline_ref: mitra.upline_ref,
       upline_info: uplineInfo,
       total_klik: mitra.total_klik,

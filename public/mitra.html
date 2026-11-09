@@ -95,10 +95,72 @@
             class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
         </div>
 
-        <div>
-          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Data Rekening Bank / E-Wallet (Untuk Pencairan Komisi)</label>
-          <input type="text" id="regRekening" required placeholder="Contoh: Bank BCA 12345678 a.n Ahmad Fauzi / DANA 08123456789"
-            class="w-full px-4 py-3.5 sm:py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-base sm:text-sm outline-none transition">
+        <!-- Data Rekening / E-Wallet Terstruktur -->
+        <div class="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200 space-y-3.5">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <span class="text-xs font-extrabold text-slate-800 uppercase tracking-wide flex items-center space-x-1.5">
+              <span>💳</span>
+              <span>Data Rekening Bank / E-Wallet (Pencairan Komisi)</span>
+            </span>
+            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">Terstruktur & Valid</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <!-- 1. Pilihan Bank / E-Wallet -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Nama Bank / E-Wallet <span class="text-rose-500">*</span></label>
+              <select id="regBankNama" required class="w-full px-3 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 bg-white text-sm outline-none transition font-semibold">
+                <option value="" disabled selected>-- Pilih Bank / E-Wallet --</option>
+                <optgroup label="🏦 Bank Nasional">
+                  <option value="BCA">BCA (Bank Central Asia)</option>
+                  <option value="Bank Mandiri">Bank Mandiri</option>
+                  <option value="BRI">BRI (Bank Rakyat Indonesia)</option>
+                  <option value="BNI">BNI (Bank Negara Indonesia)</option>
+                  <option value="BSI">BSI (Bank Syariah Indonesia)</option>
+                  <option value="CIMB Niaga">CIMB Niaga</option>
+                  <option value="Bank Permata">Bank Permata</option>
+                  <option value="Bank Jago">Bank Jago</option>
+                  <option value="SeaBank">SeaBank</option>
+                  <option value="BTN">BTN</option>
+                  <option value="Bank Danamon">Bank Danamon</option>
+                  <option value="Maybank">Maybank Indonesia</option>
+                </optgroup>
+                <optgroup label="📱 E-Wallet">
+                  <option value="DANA">DANA</option>
+                  <option value="GoPay">GoPay</option>
+                  <option value="OVO">OVO</option>
+                  <option value="ShopeePay">ShopeePay</option>
+                  <option value="LinkAja">LinkAja</option>
+                </optgroup>
+                <optgroup label="🌐 Bank Lainnya">
+                  <option value="LAINNYA">Bank Lainnya / Bank Pembangunan Daerah</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <!-- Input Bank Khusus jika pilih "LAINNYA" (default hidden) -->
+            <div id="colBankLainnya" class="hidden">
+              <label class="block text-xs font-bold text-slate-700 mb-1">Tuliskan Nama Bank <span class="text-rose-500">*</span></label>
+              <input type="text" id="regBankLainnya" placeholder="Contoh: Bank BJB, Bank Kalbar, dll"
+                class="w-full px-3 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition">
+            </div>
+
+            <!-- 2. Nomor Rekening / Nomor E-Wallet -->
+            <div id="colBankNomor">
+              <label class="block text-xs font-bold text-slate-700 mb-1" id="labelBankNomor">Nomor Rekening / No. HP <span class="text-rose-500">*</span></label>
+              <input type="text" id="regBankNomor" required placeholder="Contoh: 1234567890 atau 0812xxxx"
+                inputmode="numeric"
+                class="w-full px-3 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 font-mono text-sm outline-none transition">
+            </div>
+          </div>
+
+          <!-- 3. Nama Pemilik Rekening -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Pemilik Rekening (Atas Nama / Sesuai Buku/Akun) <span class="text-rose-500">*</span></label>
+            <input type="text" id="regBankPemilik" required placeholder="Contoh: AHMAD FAUZI"
+              class="w-full px-3 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-emerald-500 text-sm outline-none transition uppercase">
+            <p class="text-[11px] text-slate-400 mt-1">Pastikan nama sama persis dengan yang terdaftar di bank/e-wallet Anda agar verifikasi pencairan komisi otomatis disetujui.</p>
+          </div>
         </div>
 
         <div>
@@ -146,7 +208,17 @@
             </div>
             <h2 class="text-2xl sm:text-3xl font-extrabold mt-1">Halo, <span id="dashNama">Nama Mitra</span> 👋</h2>
             <p class="text-emerald-200 text-xs sm:text-sm mt-1">Kode Referral Anda: <strong class="text-amber-300 font-mono text-base" id="dashRefCode">kodererf</strong></p>
-            <p class="text-emerald-300 text-xs mt-0.5">Tujuan Pencairan: <span id="dashRekening">Bank / E-Wallet</span></p>
+            
+            <!-- Badge Rekening Terstruktur di Dashboard -->
+            <div class="mt-2.5 flex flex-wrap items-center gap-2">
+              <span class="text-xs text-emerald-200 font-medium">Pencairan ke:</span>
+              <div class="inline-flex items-center space-x-2 bg-black/35 backdrop-blur-md border border-white/15 px-3 py-1.5 rounded-xl text-xs font-mono shadow-inner">
+                <span class="bg-amber-400 text-amber-950 font-extrabold text-[10px] px-2 py-0.5 rounded-md uppercase font-sans tracking-wide" id="dashBankNama">BCA</span>
+                <span class="text-white font-bold" id="dashBankNomor">1234567890</span>
+                <span class="text-emerald-300 text-[11px] font-sans">a.n</span>
+                <span class="text-amber-200 font-bold" id="dashBankPemilik">AHMAD FAUZI</span>
+              </div>
+            </div>
           </div>
 
           <button id="btnGantiMitra" class="self-start md:self-center text-xs bg-emerald-700/80 hover:bg-emerald-700 px-3 py-1.5 rounded-lg border border-emerald-500/40 text-emerald-100 transition">
@@ -329,7 +401,28 @@
 
         document.getElementById('dashNama').textContent = data.mitra.nama;
         document.getElementById('dashRefCode').textContent = data.mitra.ref_code;
-        document.getElementById('dashRekening').textContent = data.mitra.rekening_bank;
+        // Status Rekening Terstruktur di Dashboard
+        let bNama = data.mitra.bank_nama;
+        let bNomor = data.mitra.bank_nomor;
+        let bPemilik = data.mitra.bank_pemilik;
+
+        if (!bNama && data.mitra.rekening_bank) {
+          const parts = data.mitra.rekening_bank.split(' - ');
+          if (parts.length >= 2) {
+            bNama = parts[0];
+            const sub = parts[1].split(' a.n ');
+            bNomor = sub[0] || parts[1];
+            bPemilik = sub[1] || data.mitra.nama;
+          } else {
+            bNama = 'REKENING';
+            bNomor = data.mitra.rekening_bank;
+            bPemilik = data.mitra.nama;
+          }
+        }
+
+        document.getElementById('dashBankNama').textContent = bNama || 'BANK';
+        document.getElementById('dashBankNomor').textContent = bNomor || '-';
+        document.getElementById('dashBankPemilik').textContent = bPemilik || data.mitra.nama;
         
         // Status Upline
         const uplineBadge = document.getElementById('dashUplineBadge');
@@ -428,19 +521,75 @@
       document.getElementById('sectionDashboard').classList.add('hidden');
     }
 
-    // Submit Pendaftaran
+    // Interaktivitas Dropdown Bank / E-Wallet Terstruktur
+    const selBank = document.getElementById('regBankNama');
+    const colBankLainnya = document.getElementById('colBankLainnya');
+    const inputBankLainnya = document.getElementById('regBankLainnya');
+    const labelBankNomor = document.getElementById('labelBankNomor');
+    const inputBankNomor = document.getElementById('regBankNomor');
+
+    if (selBank) {
+      selBank.addEventListener('change', () => {
+        const val = selBank.value;
+        if (val === 'LAINNYA') {
+          colBankLainnya.classList.remove('hidden');
+          inputBankLainnya.required = true;
+          inputBankLainnya.focus();
+        } else {
+          colBankLainnya.classList.add('hidden');
+          inputBankLainnya.required = false;
+        }
+
+        const ewallets = ['DANA', 'GoPay', 'OVO', 'ShopeePay', 'LinkAja'];
+        if (ewallets.includes(val)) {
+          labelBankNomor.innerHTML = `Nomor HP Akun ${val} <span class="text-rose-500">*</span>`;
+          inputBankNomor.placeholder = 'Contoh: 081234567890 (Nomor akun aktif)';
+        } else {
+          labelBankNomor.innerHTML = 'Nomor Rekening Bank <span class="text-rose-500">*</span>';
+          inputBankNomor.placeholder = 'Contoh: 1234567890 (Sesuai buku tabungan)';
+        }
+      });
+    }
+
+    // Submit Pendaftaran Mitra Terstruktur
     document.getElementById('formDaftar').addEventListener('submit', async (e) => {
       e.preventDefault();
       const btn = document.getElementById('btnDaftar');
       btn.disabled = true;
       btn.textContent = 'Mendaftarkan Akun...';
 
+      let bankNama = selBank ? selBank.value : '';
+      if (bankNama === 'LAINNYA') {
+        const customBank = inputBankLainnya.value.trim();
+        if (!customBank) {
+          alert('Mohon tuliskan nama bank Anda.');
+          inputBankLainnya.focus();
+          btn.disabled = false;
+          btn.textContent = 'Buat Akun & Dapatkan Link Referral Saya';
+          return;
+        }
+        bankNama = customBank;
+      }
+
+      const bankNomor = inputBankNomor.value.trim().replace(/[^0-9]/g, '');
+      const bankPemilik = document.getElementById('regBankPemilik').value.trim().toUpperCase();
+
+      if (!bankNama || !bankNomor || !bankPemilik) {
+        alert('Mohon lengkapi seluruh isian data rekening (Pilihan Bank/E-Wallet, Nomor Rekening, dan Nama Pemilik).');
+        btn.disabled = false;
+        btn.textContent = 'Buat Akun & Dapatkan Link Referral Saya';
+        return;
+      }
+
       const payload = {
-        nama: document.getElementById('regNama').value,
-        whatsapp: document.getElementById('regWa').value,
-        rekening_bank: document.getElementById('regRekening').value,
-        custom_ref: document.getElementById('regCustomRef').value,
-        upline_ref: document.getElementById('regUplineRef').value
+        nama: document.getElementById('regNama').value.trim(),
+        whatsapp: document.getElementById('regWa').value.trim(),
+        bank_nama: bankNama,
+        bank_nomor: bankNomor,
+        bank_pemilik: bankPemilik,
+        rekening_bank: `${bankNama} - ${bankNomor} a.n ${bankPemilik}`,
+        custom_ref: document.getElementById('regCustomRef').value.trim(),
+        upline_ref: document.getElementById('regUplineRef').value.trim()
       };
 
       try {
@@ -511,7 +660,8 @@
       const activeRef = localStorage.getItem('gr_active_mitra');
       if (!activeRef) return;
 
-      const nominalStr = prompt('Masukkan nominal saldo komisi yang ingin ditarik ke rekening:', '25000');
+      const bankInfo = `${document.getElementById('dashBankNama').textContent} - ${document.getElementById('dashBankNomor').textContent} a.n ${document.getElementById('dashBankPemilik').textContent}`;
+      const nominalStr = prompt(`Pencairan dana komisi akan ditransfer ke rekening tujuan:\n${bankInfo}\n\nMasukkan nominal yang ingin ditarik (Saldo Anda: ${document.getElementById('dashSaldo').textContent}):`, '25000');
       if (!nominalStr) return;
       const nominal = parseInt(nominalStr, 10);
       if (isNaN(nominal) || nominal <= 0) {

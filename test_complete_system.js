@@ -94,7 +94,9 @@ async function runTestSuite() {
     const mitraBaru = {
       nama: `Mitra Uji ${randomSuffix}`,
       whatsapp: `08129999${randomSuffix}`,
-      rekening_bank: `BCA 888123456 a.n Mitra Uji ${randomSuffix}`,
+      bank_nama: 'BCA',
+      bank_nomor: '888123456',
+      bank_pemilik: `MITRA UJI ${randomSuffix}`,
       custom_ref: `mitrauji${randomSuffix}`
     };
 
@@ -107,6 +109,9 @@ async function runTestSuite() {
     const regData = await resReg.json();
     assert(regData.success === true, 'Pendaftaran mitra berhasil diverifikasi');
     assert(regData.mitra.ref_code === `mitrauji${randomSuffix}`, 'Kode referral kustom terdaftar sesuai permintaan');
+    assert(regData.mitra.bank_nama === 'BCA', 'Field bank_nama terstruktur tersimpan rapi');
+    assert(regData.mitra.bank_nomor === '888123456', 'Field bank_nomor terstruktur tersimpan rapi');
+    assert(regData.mitra.bank_pemilik === `MITRA UJI ${randomSuffix}`, 'Field bank_pemilik terstruktur tersimpan rapi');
 
     const refCode = regData.mitra.ref_code;
 
