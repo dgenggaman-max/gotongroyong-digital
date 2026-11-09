@@ -93,6 +93,28 @@ const Mitra = {
     `).run(nominal, nominal, ref_code);
   },
 
+  withdraw: (ref_code, nominal, catatan = '') => {
+    const mitra = Mitra.getByRef(ref_code);
+    if (!mitra) throw new Error('Mitra tidak ditemukan.');
+    if (mitra.saldo_tersedia < nominal) throw new Error('Saldo tersedia tidak mencukupi untuk penarikan.');
+
+    const now = new Date().toISOString();
+    db.prepare('UPDATE mitra SET saldo_tersedia = saldo_tersedia - ? WHERE id = ?').run(nominal, mitra.id);
+    const info = db.prepare(`
+      INSERT INTO withdrawals (mitra_id, nominal, status, catatan, created_at)
+      VALUES (?, ?, 'PENDING', ?, ?)
+    `).run(mitra.id, nominal, catatan, now);
+
+    return {
+      id: info.lastInsertRowid,
+      mitra_id: mitra.id,
+      nominal,
+      status: 'PENDING',
+      catatan,
+      created_at: now
+    };
+  },
+
   getAll: () => {
     return db.prepare('SELECT * FROM mitra ORDER BY id DESC').all();
   }

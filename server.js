@@ -37,8 +37,6 @@ app.use(express.json({
   }
 }));
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
 // Parser Cookie Sederhana
 const parseCookies = (req) => {
   const list = {};
@@ -52,7 +50,7 @@ const parseCookies = (req) => {
   return list;
 };
 
-// Middleware Pelacak Referral (?ref=xxx)
+// Middleware Pelacak Referral (?ref=xxx) - HARUS SEBELUM express.static agar kunjungan ke /?ref=xxx tercatat
 app.use((req, res, next) => {
   const cookies = parseCookies(req);
   const refQuery = req.query.ref;
@@ -63,7 +61,10 @@ app.use((req, res, next) => {
     if (existingMitra) {
       if (cookies['last_ref'] !== cleanRef) {
         Mitra.incrementClick(cleanRef);
-        res.setHeader('Set-Cookie', `ref=${cleanRef}; Max-Age=${60 * 60 * 24 * 30}; Path=/; SameSite=Lax`);
+        res.setHeader('Set-Cookie', [
+          `ref=${cleanRef}; Max-Age=${60 * 60 * 24 * 30}; Path=/; SameSite=Lax`,
+          `last_ref=${cleanRef}; Max-Age=${60 * 60 * 24 * 30}; Path=/; SameSite=Lax`
+        ]);
       }
       req.currentRef = cleanRef;
     }
@@ -72,6 +73,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Produk Utama yang Dijual
 const PRODUCT = {
@@ -275,6 +278,8 @@ app.get('/api/mitra/:ref_code', (req, res) => {
   }
 
   const orders = Orders.getByRef(cleanRef);
+  const paidOrders = orders.filter(o => o.status === 'PAID');
+
   res.json({
     mitra: {
       id: mitra.id,
@@ -285,6 +290,7 @@ app.get('/api/mitra/:ref_code', (req, res) => {
       total_klik: mitra.total_klik,
       total_komisi: mitra.total_komisi,
       saldo_tersedia: mitra.saldo_tersedia,
+      total_terjual: paidOrders.length,
       created_at: mitra.created_at
     },
     orders: orders.map(o => ({
@@ -298,6 +304,28 @@ app.get('/api/mitra/:ref_code', (req, res) => {
   });
 });
 
+// Pengajuan Penarikan Saldo Komisi Mitra
+app.post('/api/mitra/:ref_code/withdraw', (req, res) => {
+  const cleanRef = req.params.ref_code.toLowerCase();
+  const { nominal, catatan } = req.body;
+  const amount = Number(nominal);
+
+  if (!amount || amount <= 0) {
+    return res.status(400).json({ error: 'Nominal penarikan dana tidak valid.' });
+  }
+
+  try {
+    const wd = Mitra.withdraw(cleanRef, amount, catatan || '');
+    res.json({
+      success: true,
+      message: 'Permintaan penarikan komisi berhasil dicatat!',
+      withdrawal: wd
+    });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 // Buat Pesanan Baru
 app.post('/api/orders/create', (req, res) => {
   const { pembeli_nama, pembeli_email, pembeli_wa } = req.body;
@@ -306,7 +334,7 @@ app.post('/api/orders/create', (req, res) => {
   }
 
   const cookies = parseCookies(req);
-  const ref_code = req.currentRef || cookies['ref'] || null;
+  const ref_code = req.body.ref_code || req.currentRef || cookies['ref'] || cookies['ref_code'] || null;
 
   const order = Orders.create({
     pembeli_nama,

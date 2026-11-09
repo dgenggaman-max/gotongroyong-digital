@@ -342,9 +342,35 @@
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     });
 
-    // Withdraw Notice
-    document.getElementById('btnWithdraw').addEventListener('click', () => {
-      alert('Permintaan penarikan komisi dicatat! Sistem otomatis mentransfer ke rekening Anda setiap jadwal pencairan mingguan (atau saat saldo minimum Rp 50.000 tercapai).');
+    // Withdraw Action
+    document.getElementById('btnWithdraw').addEventListener('click', async () => {
+      const activeRef = localStorage.getItem('gr_active_mitra');
+      if (!activeRef) return;
+
+      const nominalStr = prompt('Masukkan nominal saldo komisi yang ingin ditarik ke rekening:', '25000');
+      if (!nominalStr) return;
+      const nominal = parseInt(nominalStr, 10);
+      if (isNaN(nominal) || nominal <= 0) {
+        alert('Nominal penarikan tidak valid.');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/mitra/${activeRef}/withdraw`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ nominal, catatan: 'Pencairan via dashboard mitra' })
+        });
+        const data = await res.json();
+        if (data.success) {
+          alert('Permintaan penarikan komisi Rp ' + Number(nominal).toLocaleString('id-ID') + ' berhasil diajukan! Dana akan ditransfer ke rekening bank Anda.');
+          fetchMitraDashboard(activeRef);
+        } else {
+          alert('Gagal: ' + (data.error || 'Saldo tidak mencukupi'));
+        }
+      } catch (e) {
+        alert('Gagal menghubungi server: ' + e.message);
+      }
     });
 
     if (activeMitraRef) {
