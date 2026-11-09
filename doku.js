@@ -142,6 +142,61 @@ const Doku = {
     };
   },
 
+  // Cache status aktifasi channel QRIS DOKU
+  _qrisStatusCache: {
+    checkedAt: 0,
+    isActive: false,
+    reason: ''
+  },
+
+  // Cek apakah payment channel QRIS sudah aktif di akun DOKU
+  checkQrisActive: async () => {
+    const config = Doku.getConfig();
+    if (!config.isConfigured) {
+      return { isActive: false, reason: 'Kredensial DOKU belum dikonfigurasi.' };
+    }
+
+    const now = Date.now();
+    // Cache hasil pemeriksaan selama 5 menit agar tidak membebani rate limit
+    if (now - Doku._qrisStatusCache.checkedAt < 5 * 60 * 1000) {
+      return {
+        isActive: Doku._qrisStatusCache.isActive,
+        reason: Doku._qrisStatusCache.reason
+      };
+    }
+
+    const probeOrder = {
+      order_id: 'QRIS-PROBE-' + now,
+      harga: 50000,
+      pembeli_nama: 'System Probe',
+      pembeli_email: 'probe@gotongroyong.digital',
+      pembeli_wa: '08120000000'
+    };
+
+    try {
+      await Doku.createCheckoutPayment(probeOrder, ['QRIS']);
+      Doku._qrisStatusCache = {
+        checkedAt: now,
+        isActive: true,
+        reason: 'Channel QRIS aktif dan siap digunakan.'
+      };
+      return { isActive: true, reason: 'Channel QRIS aktif' };
+    } catch (err) {
+      const isInactive = err.message && err.message.toUpperCase().includes('INACTIVE');
+      Doku._qrisStatusCache = {
+        checkedAt: now,
+        isActive: false,
+        reason: isInactive 
+          ? 'Channel QRIS sedang dalam proses aktivasi/persetujuan oleh Bank Indonesia di dashboard DOKU.'
+          : err.message
+      };
+      return {
+        isActive: false,
+        reason: Doku._qrisStatusCache.reason
+      };
+    }
+  },
+
   // Khusus membuat transaksi QRIS Dinamis DOKU dengan Auto-Fallback aman
   createQrisPayment: async (order) => {
     try {

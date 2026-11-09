@@ -1,38 +1,42 @@
 const { Doku } = require('./doku');
 
 async function testDoku() {
-  console.log('Testing DOKU payment integration...');
+  console.log('=== PEMERIKSAAN STATUS QRIS DINAMIS DOKU ===');
   const config = Doku.getConfig();
   console.log('Merchant Client ID:', config.clientId);
-  console.log('Origin:', config.origin);
+  console.log('Endpoint Origin:', config.origin);
 
   const sampleOrder = {
-    order_id: 'TEST-' + Date.now(),
-    pembeli_nama: 'Uji Pembeli',
+    order_id: 'QRIS-CHECK-' + Date.now(),
+    pembeli_nama: 'Uji Pembeli QRIS',
     pembeli_email: 'pembeli@example.com',
     pembeli_wa: '081234567890',
     harga: 50000
   };
 
-  // 1. Uji Checkout Standar (Semua metode: VA, Minimarket, QRIS jika aktif)
-  console.log('\n--- 1. Menguji DOKU Hosted Checkout ---');
+  // 1. Uji Permintaan Khusus Channel QRIS Murni (Tanpa Fallback)
+  console.log('\n[1] Memeriksa Channel Khusus QRIS Dinamis ke DOKU API...');
   try {
-    const res = await Doku.createCheckoutPayment(sampleOrder);
-    console.log('✓ DOKU Hosted Checkout Berhasil!');
-    console.log('  Payment URL:', res.paymentUrl);
+    const resQris = await Doku.createCheckoutPayment(sampleOrder, ['QRIS']);
+    console.log('🎉 SELAMAT! Channel QRIS Dinamis DOKU SUDAH AKTIF!');
+    console.log('  Payment URL Khusus QRIS:', resQris.paymentUrl);
+    console.log('  Status: SIAP DIPASANG SECARA EKSKLUSIF');
   } catch (err) {
-    console.log('✗ Hosted Checkout Gagal:', err.message);
+    console.log('⏳ STATUS QRIS SAAT INI:');
+    console.log('  Respon DOKU:', err.message);
+    if (err.message.includes('INACTIVE')) {
+      console.log('  Keterangan: Channel QRIS masih dalam antrean aktivasi Bank Indonesia / DOKU.');
+    }
   }
 
-  // 2. Uji QRIS Khusus (payment_method_types: ['QRIS'])
-  console.log('\n--- 2. Menguji DOKU Khusus QRIS ---');
+  // 2. Uji Hosted Checkout (Metode Lengkap: VA, Minimarket, QRIS jika aktif)
+  console.log('\n[2] Memeriksa Hosted Checkout Umum...');
   try {
-    const resQris = await Doku.createQrisPayment(sampleOrder);
-    console.log('✓ DOKU QRIS Payment Berhasil!');
-    console.log('  QRIS Payment URL:', resQris.paymentUrl);
+    const resGeneral = await Doku.createCheckoutPayment(sampleOrder, null);
+    console.log('✓ Hosted Checkout DOKU: 100% AKTIF & BERJALAN');
+    console.log('  URL Pembayaran:', resGeneral.paymentUrl);
   } catch (err) {
-    console.log('✗ Khusus QRIS belum diaktifkan DOKU / Masih Antrean BI:');
-    console.log('  Pesan DOKU:', err.message);
+    console.log('✗ Hosted Checkout Gagal:', err.message);
   }
 }
 

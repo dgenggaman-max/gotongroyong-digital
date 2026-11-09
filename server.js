@@ -395,25 +395,71 @@ app.get('/api/orders/:order_id', async (req, res) => {
   });
 });
 
-// Generate QRIS Code Image
+// Status Channel & QRIS Image Endpoint (Terverifikasi Aman Tanpa String Palsu)
 app.get('/api/orders/:order_id/qr', async (req, res) => {
   const order = Orders.getById(req.params.order_id);
-  if (!order) return res.status(404).send('Not Found');
+  if (!order) return res.status(404).json({ error: 'Pesanan tidak ditemukan' });
 
-  const qrisPayload = `00020101021226670016ID.CO.GOTONGROYONG.WWW01189360099900000000000215${order.order_id}520458125303360540${order.harga}5802ID5919GOTONG ROYONG KARYA6013KALSEL BERSAMA62070703A016304C7B2`;
+  // 1. Cek apakah ada file QRIS statis resmi milik toko merchant di storage/qris
+  const qrisDir = path.join(__dirname, 'storage', 'qris');
+  const possibleFiles = ['merchant_qris.png', 'merchant_qris.jpg', 'merchant_qris.jpeg', 'qris.png'];
+  let staticQrBase64 = null;
 
-  try {
-    const qrDataUrl = await QRCode.toDataURL(qrisPayload, {
-      width: 320,
-      margin: 2,
-      color: {
-        dark: '#064e3b',
-        light: '#ffffff'
-      }
+  for (const filename of possibleFiles) {
+    const fullPath = path.join(qrisDir, filename);
+    if (fs.existsSync(fullPath)) {
+      try {
+        const fileBuf = fs.readFileSync(fullPath);
+        const mime = filename.endsWith('.png') ? 'image/png' : 'image/jpeg';
+        staticQrBase64 = `data:${mime};base64,${fileBuf.toString('base64')}`;
+        break;
+      } catch (e) {}
+    }
+  }
+
+  if (staticQrBase64) {
+    return res.json({
+      qris_available: true,
+      is_official: true,
+      source: 'MERCHANT_OFFICIAL_QRIS',
+      qr_data_url: staticQrBase64,
+      merchant_name: 'AYAM GEPREK RAJA RASA'
     });
-    res.json({ qr_data_url: qrDataUrl, qris_payload: qrisPayload });
+  }
+
+  // 2. Cek status aktifasi channel QRIS resmi di DOKU Production
+  try {
+    const qrisStatus = await Doku.checkQrisActive();
+    if (qrisStatus.isActive) {
+      // Jika DOKU sudah menyetujui QRIS, buat pembayaran resmi DOKU QRIS
+      const qrisPayment = await Doku.createCheckoutPayment(order, ['QRIS']);
+      return res.json({
+        qris_available: true,
+        is_official: true,
+        source: 'DOKU_DYNAMIC_QRIS',
+        payment_url: qrisPayment.paymentUrl,
+        merchant_name: 'AYAM GEPREK RAJA RASA'
+      });
+    }
+
+    // 3. Jika QRIS DOKU belum aktif (sedang antrean BI), berikan status transparan
+    // JANGAN generate string QR palsu yang menyebabkan error "QRIS terjadi kesalahan" di HP!
+    return res.json({
+      qris_available: false,
+      is_official: false,
+      status: 'PENDING_BI_APPROVAL',
+      reason: qrisStatus.reason || 'Channel QRIS sedang dalam proses verifikasi aktivasi oleh Bank Indonesia di dashboard DOKU.',
+      recommended_channel: 'VIRTUAL_ACCOUNT',
+      instruction: 'Silakan gunakan Virtual Account Bank (BCA, Mandiri, BRI, BNI) atau Minimarket (Alfamart/Indomaret) melalui tombol DOKU Resmi.'
+    });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return res.json({
+      qris_available: false,
+      is_official: false,
+      status: 'UNAVAILABLE',
+      reason: err.message,
+      recommended_channel: 'VIRTUAL_ACCOUNT'
+    });
   }
 });
 

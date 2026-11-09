@@ -50,34 +50,73 @@
         </div>
       </div>
 
-      <!-- Tab Pembayaran: QRIS vs DOKU Hosted -->
+      <!-- Tab Pembayaran: DOKU Resmi (Aktif) vs QRIS -->
       <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-bold">
-        <button id="tabBtnQris" type="button" class="tab-active py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
-          <span>⚡ QRIS Nasional</span>
+        <button id="tabBtnDoku" type="button" class="tab-active py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
+          <span>💳 Virtual Account & Retail</span>
         </button>
-        <button id="tabBtnDoku" type="button" class="tab-inactive py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
-          <span>💳 Virtual Account</span>
+        <button id="tabBtnQris" type="button" class="tab-inactive py-2.5 px-2 rounded-lg border text-center transition flex items-center justify-center space-x-1">
+          <span>⚡ QRIS Nasional</span>
         </button>
       </div>
 
-      <!-- KONTEN TAB 1: QRIS DINAMIS -->
-      <div id="tabContentQris" class="space-y-4 text-center">
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center">
-          <!-- Gambar QRIS -->
+      <!-- KONTEN TAB 1: DOKU HOSTED CHECKOUT (METODE AKTIF & RESMI) -->
+      <div id="tabContentDoku" class="space-y-4">
+        <!-- Status Resmi Merchant -->
+        <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-3.5 text-xs space-y-2">
+          <div class="flex items-center justify-between font-semibold text-slate-800">
+            <span>Merchant Terverifikasi:</span>
+            <span class="text-emerald-800 font-extrabold truncate ml-2">AYAM GEPREK RAJA RASA</span>
+          </div>
+          <div class="text-[11px] text-slate-600 leading-relaxed">
+            Pembayaran diproses secara instan & aman melalui gerbang resmi <strong>DOKU Payment Gateway</strong>.
+          </div>
+        </div>
+
+        <!-- Pilihan Metode Pembayaran Aktif -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2.5 text-xs">
+          <div class="font-bold text-slate-700 flex items-center space-x-1">
+            <span>🏦 Bank Virtual Account (Otomatis Terverifikasi):</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-normal">
+            BRI, BNI, Mandiri Syariah (BSI), Permata, CIMB Niaga, Danamon, Maybank, BTN, BNC, Sinarmas. 
+            <span class="text-slate-700 font-semibold">(Bisa dibayar dari BCA, Livin Mandiri, BRImo, atau m-Banking apa saja via transfer).</span>
+          </p>
+
+          <div class="pt-2 border-t border-slate-200">
+            <div class="font-bold text-slate-700 flex items-center space-x-1">
+              <span>🏪 Gerai Minimarket:</span>
+            </div>
+            <p class="text-[11px] text-slate-500">
+              Kasir Alfamart, Alfamidi, Dan+Dan, Indomaret, Ceriamart di seluruh Indonesia.
+            </p>
+          </div>
+        </div>
+
+        <button id="btnDokuPayNow" type="button"
+          class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-sm sm:text-base transition flex items-center justify-center space-x-2">
+          <span>💳 Bayar Sekarang via DOKU Resmi</span>
+          <span>➔</span>
+        </button>
+        <p class="text-[11px] text-center text-slate-400">
+          Klik tombol di atas untuk memilih bank atau minimarket pilihan Anda di sistem DOKU.
+        </p>
+      </div>
+
+      <!-- KONTEN TAB 2: QRIS (DOKU / MERCHANT) -->
+      <div id="tabContentQris" class="hidden space-y-4 text-center">
+        <!-- Kontainer jika QRIS Aktif -->
+        <div id="qrisActiveBox" class="hidden bg-slate-50 border border-slate-200 rounded-2xl p-4 flex flex-col items-center justify-center">
           <div class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-sm max-w-[240px] w-full">
             <img id="qrisImage" src="" alt="Kode QRIS Pembayaran" class="w-full h-auto object-contain aspect-square rounded-lg mx-auto">
             <div id="qrisLoader" class="absolute inset-0 bg-white/90 flex flex-col items-center justify-center rounded-lg space-y-2">
               <div class="w-8 h-8 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
-              <span class="text-[11px] font-medium text-slate-500">Membuat QRIS...</span>
+              <span class="text-[11px] font-medium text-slate-500">Memeriksa QRIS...</span>
             </div>
           </div>
-
-          <!-- Logo E-Wallet & Bank Pendukung -->
-          <p class="text-[11px] text-slate-500 mt-2 font-medium">
+          <p class="text-[11px] text-slate-500 mt-2 font-medium" id="qrisSupportText">
             Scan via BCA, Mandiri, BRI, BNI, GoPay, OVO, DANA, ShopeePay & semua bank.
           </p>
-
-          <!-- Tombol Download QRIS di HP -->
           <div class="mt-3 w-full flex flex-col sm:flex-row gap-2">
             <a id="btnDownloadQris" href="#" download="QRIS_GotongRoyong.png"
               class="flex-1 py-2.5 px-3 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center justify-center space-x-1 shadow-sm">
@@ -90,40 +129,28 @@
           </div>
         </div>
 
-        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2.5 text-left text-[11px] text-amber-900 space-y-1">
-          <p class="font-bold flex items-center space-x-1">
-            <span>📱 Cara Bayar di HP:</span>
-          </p>
-          <ol class="list-decimal list-inside space-y-0.5 text-amber-800">
-            <li>Screenshot atau klik tombol <strong>Unduh Gambar QR</strong> di atas.</li>
-            <li>Buka aplikasi m-Banking (BCA, Livin', BRImo) atau E-Wallet (GoPay, OVO, Dana).</li>
-            <li>Pilih menu <strong>Scan QRIS</strong> lalu pilih foto QR dari galeri HP Anda.</li>
-          </ol>
-        </div>
-      </div>
-
-      <!-- KONTEN TAB 2: DOKU HOSTED CHECKOUT -->
-      <div id="tabContentDoku" class="hidden space-y-4">
-        <!-- Status Resmi Merchant -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 text-xs space-y-2">
-          <div class="flex items-center justify-between font-semibold text-slate-700">
-            <span>Merchant Resmi:</span>
-            <span class="text-emerald-700 font-bold truncate ml-2">AYAM GEPREK RAJA RASA</span>
+        <!-- Kontainer jika QRIS Masih Antrean Aktivasi BI di DOKU -->
+        <div id="qrisInactiveBox" class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-left space-y-3">
+          <div class="flex items-start space-x-2.5">
+            <span class="text-xl">⏳</span>
+            <div>
+              <h4 class="text-xs font-extrabold text-amber-900">Channel QRIS Sedang Dalam Verifikasi Bank Indonesia</h4>
+              <p class="text-[11px] text-amber-800 mt-1 leading-relaxed" id="qrisInactiveReason">
+                Metode QRIS DOKU merchant <strong>AYAM GEPREK RAJA RASA</strong> sedang dalam antrean verifikasi Bank Indonesia.
+              </p>
+            </div>
           </div>
-          <div class="flex items-center justify-between text-slate-500 text-[11px]">
-            <span>Metode Tersedia:</span>
-            <span class="text-emerald-600 font-bold">BCA, Mandiri, BRI, BNI, BSI, Alfamart</span>
-          </div>
-        </div>
 
-        <button id="btnDokuPayNow" type="button"
-          class="w-full py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-xl sm:rounded-2xl shadow-lg shadow-emerald-600/30 text-sm sm:text-base transition flex items-center justify-center space-x-2">
-          <span>💳 Bayar via DOKU Resmi</span>
-          <span>➔</span>
-        </button>
-        <p class="text-[11px] text-center text-slate-400">
-          Mendukung Virtual Account semua bank utama dan gerai minimarket terdekat.
-        </p>
+          <div class="bg-white/80 rounded-xl p-3 border border-amber-200/80 text-[11px] text-slate-700 space-y-1.5">
+            <p class="font-bold text-slate-800">✅ Pembayaran Langsung Aktif Saat Ini:</p>
+            <p>Anda dapat segera menyelesaikan pesanan secara instan menggunakan <strong>Virtual Account Bank (BCA, Mandiri, BRI, BNI)</strong> atau tunai di <strong>Kasir Alfamart / Indomaret</strong>.</p>
+          </div>
+
+          <button id="btnSwitchToDoku" type="button"
+            class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs transition shadow-md flex items-center justify-center space-x-1">
+            <span>💳 Bayar Sekarang via Virtual Account / Retail ➔</span>
+          </button>
+        </div>
       </div>
 
       <!-- Hitung Mundur & Polling Otomatis -->
@@ -218,23 +245,45 @@
       const loader = document.getElementById('qrisLoader');
       const img = document.getElementById('qrisImage');
       const btnDownload = document.getElementById('btnDownloadQris');
+      const activeBox = document.getElementById('qrisActiveBox');
+      const inactiveBox = document.getElementById('qrisInactiveBox');
       loader.classList.remove('hidden');
 
       try {
         const res = await fetch(`${API_BASE}/api/orders/${orderId}/qr`);
         const data = await res.json();
-        if (data.qr_data_url) {
+        if (data.qris_available && data.qr_data_url) {
           img.src = data.qr_data_url;
           btnDownload.href = data.qr_data_url;
+          activeBox.classList.remove('hidden');
+          inactiveBox.classList.add('hidden');
+        } else {
+          activeBox.classList.add('hidden');
+          inactiveBox.classList.remove('hidden');
+          if (data.reason) {
+            document.getElementById('qrisInactiveReason').textContent = data.reason;
+          }
         }
       } catch (e) {
         console.error('Gagal memuat QRIS:', e);
+        activeBox.classList.add('hidden');
+        inactiveBox.classList.remove('hidden');
       } finally {
         loader.classList.add('hidden');
       }
     }
 
     document.getElementById('btnRefreshQris').addEventListener('click', loadQrisImage);
+
+    // Tombol Beralih ke DOKU dari Kotak QRIS Inactive
+    const btnSwitch = document.getElementById('btnSwitchToDoku');
+    if (btnSwitch) {
+      btnSwitch.addEventListener('click', () => {
+        tabBtnDoku.click();
+        const payBtn = document.getElementById('btnDokuPayNow');
+        if (payBtn) payBtn.click();
+      });
+    }
 
     // Prepare DOKU Checkout
     async function prepareDokuCheckout() {
@@ -262,9 +311,9 @@
       if (dokuPaymentUrl) {
         window.location.href = dokuPaymentUrl;
       } else {
-        alert('Gagal menghubungkan ke DOKU. Anda tetap dapat membayar lewat tab QRIS di sebelah.');
+        alert('Gagal menghubungkan ke gerbang DOKU. Silakan periksa koneksi internet Anda atau coba beberapa saat lagi.');
         btn.disabled = false;
-        btn.innerHTML = '<span>💳 Bayar via DOKU Resmi ➔</span>';
+        btn.innerHTML = '<span>💳 Bayar Sekarang via DOKU Resmi ➔</span>';
       }
     });
 

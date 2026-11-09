@@ -6,6 +6,8 @@
 
 const fs = require('node:fs');
 const path = require('node:path');
+const http = require('node:http');
+const app = require('./server');
 const { db, Mitra, Orders } = require('./db');
 const { Doku } = require('./doku');
 
@@ -15,6 +17,16 @@ async function runTestSuite() {
   console.log('================================================================');
   console.log('🚀 MEMULAI UJI COBA KESELURUHAN SISTEM GOTONG ROYONG DIGITAL');
   console.log('================================================================\n');
+
+  let serverInstance = null;
+  // Pastikan server aktif
+  try {
+    await fetch(`${BASE_URL}/`);
+  } catch (e) {
+    // Jalankan server lokal untuk keperluan test jika belum berjalan
+    serverInstance = app.listen(3000);
+    await new Promise(r => setTimeout(r, 600));
+  }
 
   let passedTests = 0;
   let totalTests = 0;
@@ -144,12 +156,18 @@ async function runTestSuite() {
     assert(orderStatus.download_url === null, 'Keamanan: download_url terkunci (null) saat pesanan PENDING');
     assert(orderStatus.ref_code === refCode, 'Pesanan terhubung dengan kode referral mitra');
 
-    // Uji Generator QRIS Dinamis
+    // Uji Endpoint Status QRIS & Keamanan Pembayaran
     const resQr = await fetch(`${BASE_URL}/api/orders/${orderId}/qr`);
     assert(resQr.status === 200, 'GET /api/orders/:order_id/qr mengembalikan 200 OK');
     const qrData = await resQr.json();
-    assert(Boolean(qrData.qr_data_url), 'Data URL gambar QRIS dinamis berhasil dibuat');
-    assert(qrData.qr_data_url.startsWith('data:image/png;base64,'), 'Format gambar QRIS valid (PNG Base64)');
+    assert(typeof qrData.qris_available === 'boolean', 'Endpoint QRIS mengembalikan status ketersediaan boolean yang valid');
+    if (qrData.qris_available) {
+      assert(Boolean(qrData.qr_data_url), 'Data URL gambar QRIS resmi tersedia');
+      assert(qrData.qr_data_url.startsWith('data:image/'), 'Format gambar QRIS resmi valid (Base64 image)');
+    } else {
+      assert(qrData.status === 'PENDING_BI_APPROVAL' || qrData.status === 'UNAVAILABLE', 'Status QRIS tidak aktif terdokumentasi rapi (proses BI)');
+      assert(qrData.recommended_channel === 'VIRTUAL_ACCOUNT', 'Sistem otomatis merekomendasikan Virtual Account DOKU sebagai pembayaran aktif');
+    }
 
     // Uji Pembuatan Checkout DOKU Resmi
     console.log('  ... Menghubungi DOKU Production API ...');
@@ -259,10 +277,14 @@ async function runTestSuite() {
     console.log('   - Keamanan berkas PDF terkunci rapat sebelum bayar.');
     console.log('   - Integrasi DOKU Production merespons aktif & valid.');
     console.log('================================================================\n');
-
+    process.exit(0);
   } catch (err) {
     console.error('\n❌ PENGUJIAN TERHENTI DENGAN EROR:', err.message);
     process.exit(1);
+  } finally {
+    if (serverInstance) {
+      serverInstance.close();
+    }
   }
 }
 
