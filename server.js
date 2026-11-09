@@ -81,11 +81,11 @@ const PRODUCT = {
   id: 'PROD-BUKU-01',
   name: 'Membangun yang Bernilai & Mega Bundle 670+ Produk Digital + 50 Masterclass E-Course',
   author: 'Karya Digital Gotong Royong',
-  price: 50000,
+  price: 49999,
   commission: 25000,          // Kompatibilitas mundur
   commission_mitra: 25000,    // Tier 1: 50% (Rp 25.000) bagi hasil langsung ke mitra penjual
   commission_upline: 5000,    // Tier 2: 10% (Rp 5.000) bagi hasil ke upline yang mengajak mitra
-  admin_share: 20000,         // Admin: 40% (Rp 20.000) pemeliharaan sistem & produk
+  admin_share: 19999,         // Admin: ~40% (Rp 19.999) pemeliharaan sistem & produk
   file_path: path.join(__dirname, 'storage', 'products', 'membangun-yang-bernilai.pdf'),
   bundle_links: {
     folder_univ_digital: 'https://drive.google.com/drive/folders/1xOfbEbwqIffo7tqAEbwNdn0VFN0EQ6L_?usp=drive_link',

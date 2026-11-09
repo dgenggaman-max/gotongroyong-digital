@@ -43,7 +43,7 @@
         Bagi Hasil Adil: <span class="text-emerald-700">Komisi 50%</span> Langsung + <span class="text-teal-700">10% Royalti Tim</span>
       </h1>
       <p class="text-slate-600 text-sm sm:text-base mt-2">
-        Sistem kemitraan berbasis produk riil seharga <strong>Rp 50.000</strong>. Anda mendapat <strong>Rp 25.000 (50%)</strong> untuk penjualan pribadi, dan <strong>Rp 5.000 (10%)</strong> pasif income untuk setiap penjualan yang dilakukan oleh mitra binaan Anda!
+        Sistem kemitraan berbasis produk riil seharga <strong>Rp 49.999</strong>. Cukup pasang status, Anda mendapat <strong>Rp 25.000 (50%)</strong> untuk penjualan pribadi, dan <strong>Rp 5.000 (10%)</strong> pasif income untuk setiap penjualan yang dilakukan oleh mitra binaan Anda!
       </p>
 
       <!-- Rincian Pembagian Keuntungan Transparan -->
@@ -51,17 +51,17 @@
         <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
           <div class="text-[10px] sm:text-xs font-bold text-emerald-800 uppercase">Tier 1: Penjual</div>
           <div class="text-lg sm:text-xl font-extrabold text-emerald-700">50%</div>
-          <div class="text-xs text-emerald-900 font-semibold">Rp 25.000 / buku</div>
+          <div class="text-xs text-emerald-900 font-semibold">Rp 25.000 / paket</div>
         </div>
         <div class="p-3 bg-teal-50 rounded-2xl border border-teal-200">
           <div class="text-[10px] sm:text-xs font-bold text-teal-800 uppercase">Tier 2: Upline Tim</div>
           <div class="text-lg sm:text-xl font-extrabold text-teal-700">10%</div>
-          <div class="text-xs text-teal-900 font-semibold">Rp 5.000 / buku</div>
+          <div class="text-xs text-teal-900 font-semibold">Rp 5.000 / paket</div>
         </div>
         <div class="p-3 bg-slate-100 rounded-2xl border border-slate-200">
           <div class="text-[10px] sm:text-xs font-bold text-slate-600 uppercase">Platform & Admin</div>
           <div class="text-lg sm:text-xl font-extrabold text-slate-800">40%</div>
-          <div class="text-xs text-slate-700 font-semibold">Rp 20.000 / buku</div>
+          <div class="text-xs text-slate-700 font-semibold">Rp 19.999 / paket</div>
         </div>
       </div>
     </div>
@@ -633,10 +633,10 @@
       alert('Tautan penjualan buku berhasil disalin! (Komisi Anda 50% = Rp 25.000 per transaksi)');
     });
 
-    // Share WA Buku
+    // Share WA Buku / Paket
     document.getElementById('btnShareWaBuku').addEventListener('click', () => {
       const link = document.getElementById('dashLinkBuku').value;
-      const text = `Halo rekan-rekan! Mau belajar membangun usaha yang bernilai dari nol dengan panduan lembar kerja 30 hari aplikatif? Yuk baca E-Book praktis ini: ${link}`;
+      const text = `Halo rekan-rekan! Mau dapat paket lengkap usaha digital (E-Book 30 Hari + 670+ Produk Digital Siap Jual + 50 Video Masterclass Bisnis) cuma promo Rp 49.999 sekali bayar? Bahkan bisa langsung dijual lagi cuma pasang status dapat komisi Rp 25.000/penjualan! Cek selengkapnya di sini: ${link}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     });
 
@@ -651,7 +651,7 @@
     // Share WA Mitra
     document.getElementById('btnShareWaMitra').addEventListener('click', () => {
       const link = document.getElementById('dashLinkMitra');
-      const text = `Yuk gabung menjadi mitra Gotong Royong Digital! Tanpa modal sepeser pun, cukup bagikan link e-book langsung dapat bagi hasil 50% (Rp 25.000/penjualan). Daftar di sini: ${link.value}`;
+      const text = `Yuk gabung jadi mitra Gotong Royong Digital! 100% Gratis, tinggal pasang status WA dapat bagi hasil Rp 25.000 (50%) tiap penjualan + bonus pasif Rp 5.000 dari tim. Daftar sekarang: ${link.value}`;
       window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     });
 

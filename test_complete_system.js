@@ -77,7 +77,7 @@ async function runTestSuite() {
     const resProd = await fetch(`${BASE_URL}/api/product-info`);
     assert(resProd.status === 200, 'GET /api/product-info mengembalikan 200 OK');
     const prodData = await resProd.json();
-    assert(prodData.product.price === 50000, 'Harga produk pas Rp 50.000');
+    assert(prodData.product.price === 49999, 'Harga produk pas Rp 49.999');
     assert(prodData.product.commission === 25000, 'Nilai komisi mitra pas Rp 25.000 (50%)');
 
     const resSummary = await fetch(`${BASE_URL}/api/public-summary`);
@@ -323,7 +323,7 @@ async function runTestSuite() {
     assert(dbOrderTier2.komisi_mitra === 25000, 'Komisi penjual langsung diset 50% = Rp 25.000');
     assert(dbOrderTier2.upline_ref === uplineCode, 'Order tercatat otomatis memiliki upline terhubung');
     assert(dbOrderTier2.komisi_upline === 5000, 'Komisi upline diset 10% = Rp 5.000');
-    assert(dbOrderTier2.harga - dbOrderTier2.komisi_mitra - dbOrderTier2.komisi_upline === 20000, 'Bagian bersih Admin terverifikasi 40% = Rp 20.000');
+    assert(dbOrderTier2.harga - dbOrderTier2.komisi_mitra - dbOrderTier2.komisi_upline === 19999, 'Bagian bersih Admin terverifikasi pas Rp 19.999');
 
     // 4. Konfirmasi Pelunasan Order Tier 2
     const resSimulateTier2 = await fetch(`${BASE_URL}/api/orders/${orderTier2Id}/simulate-pay`, {
