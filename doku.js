@@ -73,6 +73,12 @@ const Doku = {
     const timestamp = new Date().toISOString().slice(0, 19) + 'Z';
     const baseUrl = process.env.APP_BASE_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
 
+    const cleanProductName = String(order.product_name || 'Paket Gotong Royong Digital')
+      .replace(/&/g, 'dan')
+      .replace(/[^a-zA-Z0-9.\-/+,=_:'@%() ]/g, '')
+      .trim()
+      .substring(0, 64);
+
     const orderPayload = {
       order: {
         invoice_number: order.order_id,
@@ -80,7 +86,14 @@ const Doku = {
         currency: 'IDR',
         callback_url: `${baseUrl}/success/${order.order_id}`,
         callback_url_cancel: `${baseUrl}/checkout/${order.order_id}`,
-        auto_redirect: true
+        auto_redirect: true,
+        line_items: [
+          {
+            name: cleanProductName,
+            price: order.harga,
+            quantity: 1
+          }
+        ]
       },
       payment: {
         payment_due_date: 60 // 60 menit masa berlaku

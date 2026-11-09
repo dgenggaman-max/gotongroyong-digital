@@ -540,7 +540,7 @@ app.get('/api/orders/:order_id/qr', async (req, res) => {
       is_official: true,
       source: 'MERCHANT_OFFICIAL_QRIS',
       qr_data_url: staticQrBase64,
-      merchant_name: 'AYAM GEPREK RAJA RASA'
+      merchant_name: 'Ekonomi Gotong Royong Digital'
     });
   }
 
@@ -555,7 +555,7 @@ app.get('/api/orders/:order_id/qr', async (req, res) => {
         is_official: true,
         source: 'DOKU_DYNAMIC_QRIS',
         payment_url: qrisPayment.paymentUrl,
-        merchant_name: 'AYAM GEPREK RAJA RASA'
+        merchant_name: 'Ekonomi Gotong Royong Digital'
       });
     }
 
