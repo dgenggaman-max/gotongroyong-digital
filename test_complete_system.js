@@ -225,6 +225,18 @@ async function runTestSuite() {
     const paidOrderData = await resPaidOrder.json();
     assert(Boolean(paidOrderData.download_url), `download_url resmi aktif: ${paidOrderData.download_url}`);
 
+    // Verifikasi Paket Lengkap Pembayaran Berhasil (Bundle Access)
+    assert(Boolean(paidOrderData.bundle_access), 'Paket bundle produk digital aktif setelah lunas');
+    assert(paidOrderData.bundle_access.folder_univ_digital.includes('1xOfbEbwqIffo7tqAEbwNdn0VFN0EQ6L_'), 'Akses Folder Univ Digital (500++ Produk) terdaftar');
+    assert(paidOrderData.bundle_access.folder_cuanlagi.includes('17prCtQGij_EGh_6sCjZvhlnvgOX_KijI'), 'Akses Folder CUANLAGI (50 E-Course) terdaftar');
+    assert(paidOrderData.bundle_access.spreadsheet_products.includes('1_9ND8yru_bVHQAEoMxG35-ZWX2peYOOSEB4l_-rZFKI'), 'Akses Spreadsheet 120 Produk Digital terdaftar');
+
+    // Verifikasi Endpoint API Katalog 120 Produk Paket
+    const resPackageItems = await fetch(`${BASE_URL}/api/package-items`);
+    assert(resPackageItems.status === 200, 'GET /api/package-items mengembalikan 200 OK');
+    const packageData = await resPackageItems.json();
+    assert(packageData.total === 120, `Total produk dalam spreadsheet pas 120 item (Aktual: ${packageData.total})`);
+
     const resAuthorizedDownload = await fetch(`${BASE_URL}${paidOrderData.download_url}`);
     assert(resAuthorizedDownload.status === 200, 'Unduhan dokumen diizinkan (200 OK) setelah lunas');
     const downloadedBuffer = await resAuthorizedDownload.arrayBuffer();

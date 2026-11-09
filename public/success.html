@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>Status Pembayaran — Gotong Royong Digital</title>
+  <title>Akses Paket Produk Digital — Gotong Royong Digital</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
@@ -13,148 +13,281 @@
 <body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex flex-col justify-between">
 
   <!-- Header -->
-  <header class="bg-white border-b border-slate-200">
-    <div class="max-w-4xl mx-auto px-4 h-16 flex items-center justify-between">
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-2">
-        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-sm">GR</a>
-        <span class="font-bold text-slate-900 text-base">GotongRoyong<span class="text-emerald-600">.Digital</span></span>
+        <a href="/" class="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-sm">GR</a>
+        <a href="/" class="font-extrabold text-slate-900 text-base">GotongRoyong<span class="text-emerald-600">.Digital</span></a>
       </div>
-      <div>
-        <a href="/" class="text-xs text-slate-500 hover:text-emerald-700 font-semibold">Toko Utama</a>
+      <div class="flex items-center space-x-3">
+        <a href="/mitra" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 transition">
+          🤝 Jadi Mitra (50% + 10%)
+        </a>
+        <a href="/" class="text-xs text-slate-500 hover:text-slate-800 font-semibold">Toko Utama</a>
       </div>
     </div>
   </header>
 
-  <main class="max-w-md mx-auto px-3.5 py-4 sm:py-8 flex-1 w-full">
+  <main class="max-w-3xl mx-auto px-3.5 py-6 sm:py-10 flex-1 w-full">
     
-    <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 border border-slate-200 shadow-xl space-y-6">
+    <!-- KONDISI 1: PEMBAYARAN SUDAH LUNAS (PAID) - AREA MEMBER & AKSES PRODUK LENGKAP -->
+    <div id="boxPaid" class="hidden space-y-6">
       
-      <!-- KONDISI 1: PEMBAYARAN SUDAH LUNAS (PAID) -->
-      <div id="boxPaid" class="hidden text-center space-y-6">
-        <!-- Icon Sukses Centang Hijau -->
-        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner font-bold">
+      <!-- Banner Sukses -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-200 shadow-xl text-center space-y-4 relative overflow-hidden">
+        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl shadow-inner font-extrabold">
           ✓
         </div>
 
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">Transaksi Terverifikasi Lunas</span>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Terima Kasih, Pembayaran Berhasil!</h1>
-          <p class="text-sm text-slate-600 mt-2">
-            Pembayaran Anda telah diterima dan diverifikasi resmi oleh sistem. Berkas digital Anda siap diunduh di bawah ini.
+          <span class="inline-flex items-center space-x-1.5 text-xs font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-100/70 border border-emerald-200 px-3 py-1 rounded-full">
+            <span>🎉</span>
+            <span>Transaksi Lunas & Terverifikasi Resmi</span>
+          </span>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Selamat! Paket Digital Anda Telah Aktif</h1>
+          <p class="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto mt-1">
+            Pembayaran Anda telah tervalidasi. Seluruh materi e-book, masterclass video e-course, dan koleksi 670+ produk digital siap Anda akses dan unduh selamanya di bawah ini.
           </p>
         </div>
 
-        <!-- Rincian Pesanan -->
-        <div class="bg-slate-50 rounded-2xl p-4 text-left text-xs space-y-2 border border-slate-200 font-medium">
+        <!-- Rincian Pesanan Singkat -->
+        <div class="bg-slate-50 rounded-2xl p-4 text-left text-xs space-y-1.5 border border-slate-200 font-medium max-w-xl mx-auto">
           <div class="flex justify-between text-slate-600">
             <span>Produk:</span>
-            <span class="font-bold text-slate-800" id="paidProduct">E-Book Membangun yang Bernilai</span>
+            <span class="font-bold text-slate-900" id="paidProduct">Mega Bundle Gotong Royong</span>
           </div>
           <div class="flex justify-between text-slate-600">
             <span>Order ID:</span>
-            <span class="font-mono text-slate-800" id="paidOrderId">...</span>
+            <span class="font-mono text-slate-800 font-bold" id="paidOrderId">...</span>
           </div>
           <div class="flex justify-between text-slate-600">
-            <span>Atas Nama:</span>
-            <span class="text-slate-800" id="paidNama">...</span>
+            <span>Atas Nama Pembeli:</span>
+            <span class="text-slate-800 font-semibold" id="paidNama">...</span>
           </div>
           <div class="flex justify-between text-slate-600" id="paidRefRow">
             <span>Mitra Pendukung:</span>
             <span class="font-bold text-emerald-700" id="paidRef">Mitra</span>
           </div>
           <div class="flex justify-between text-slate-600">
-            <span>Status:</span>
-            <span class="font-bold text-emerald-600">LUNAS (PAID)</span>
+            <span>Total Dibayar:</span>
+            <span class="font-extrabold text-emerald-600">Rp 50.000 (Lunas)</span>
           </div>
         </div>
+      </div>
 
-        <!-- Tombol Download Dokumen PDF Asli -->
-        <div class="pt-2">
-          <a id="btnDownload" href="#"
-            class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition flex items-center justify-center space-x-2">
-            <span>📥 Unduh E-Book & Lembar Kerja (PDF)</span>
+      <!-- KARTU 1: E-BOOK UTAMA (DOWNLOAD LANGSUNG SERVER) -->
+      <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg relative overflow-hidden">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div class="space-y-1 max-w-lg">
+            <span class="text-[11px] bg-emerald-600/70 border border-emerald-400/30 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider text-amber-300">Produk Utama</span>
+            <h3 class="text-xl sm:text-2xl font-extrabold">E-Book & Lembar Kerja Usaha 30 Hari</h3>
+            <p class="text-xs text-emerald-200 leading-relaxed">
+              Panduan 25 halaman aplikatif: Membangun yang Bernilai dari ide mentah hingga menghasilkan keuntungan nyata. Format PDF resmi siap dibaca di HP, tablet, atau dicetak.
+            </p>
+          </div>
+          <div class="shrink-0">
+            <a id="btnDownload" href="#"
+              class="inline-flex items-center justify-center space-x-2 w-full sm:w-auto px-6 py-3.5 bg-amber-400 hover:bg-amber-300 active:scale-95 text-amber-950 font-extrabold rounded-xl shadow-md transition text-sm">
+              <span>📥 Unduh E-Book (PDF)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- GRID 3 AKSES BUNDLE TAMBAHAN GOOGLE DRIVE & SPREADSHEET -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+        <!-- PAKET 1: UNIV DIGITAL (500++ PRODUK DIGITAL) -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-emerald-400 transition">
+          <div class="space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
+              📂
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Akses Google Drive</span>
+              <h4 class="font-extrabold text-slate-900 text-base mt-1">Akses 500++ Produk Digital</h4>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Koleksi Univ Digital: Panduan Jualan, Marketing Kit, Bonus 90 E-Course, 640+ Template Mock Up Canva, E-Book Cuan TikTok & Grup Support.
+            </p>
+          </div>
+          <a id="linkUnivDigital" href="https://drive.google.com/drive/folders/1xOfbEbwqIffo7tqAEbwNdn0VFN0EQ6L_?usp=drive_link" target="_blank"
+            class="w-full py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs text-center transition flex items-center justify-center space-x-1 shadow-sm">
+            <span>Buka Folder Drive ➔</span>
           </a>
-          <p class="text-[11px] text-slate-400 mt-2">
-            Ukuran berkas: ~164 KB (PDF 25 Halaman Lengkap). Unduhan Anda aktif selamanya.
-          </p>
         </div>
 
-        <!-- Ajakan Gotong Royong -->
-        <div class="mt-8 pt-6 border-t border-slate-100 text-left bg-gradient-to-br from-amber-50 to-emerald-50 p-5 rounded-2xl border border-amber-200/60">
-          <div class="flex items-start space-x-3">
-            <span class="text-2xl">💡</span>
+        <!-- PAKET 2: CUANLAGI (50 MASTERCLASS E-COURSE) -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-emerald-400 transition">
+          <div class="space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
+              🎓
+            </div>
             <div>
-              <h4 class="font-bold text-slate-900 text-sm">Mau Dapat Penghasilan dari Buku Ini?</h4>
-              <p class="text-xs text-slate-600 mt-1">
-                Daftar jadi <strong>Mitra Gotong Royong</strong> gratis. Bagikan link referral Anda dan dapatkan komisi <strong>Rp 25.000 (50%)</strong> untuk setiap buku yang terbeli!
-              </p>
-              <a href="/mitra" class="inline-block mt-3 text-xs font-bold bg-slate-900 text-white px-4 py-2 rounded-xl hover:bg-slate-800 transition">
-                Daftar Jadi Mitra ➔
+              <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">Masterclass Video</span>
+              <h4 class="font-extrabold text-slate-900 text-base mt-1">50 E-Course CUANLAGI</h4>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              50 Video Masterclass: Mahir Website, Affiliate, WA Marketing, Telegram, Facebook Ads, Funnel Mastery, Email Profits, Canva, & Copywriting.
+            </p>
+          </div>
+          <a id="linkCuanlagi" href="https://drive.google.com/drive/folders/17prCtQGij_EGh_6sCjZvhlnvgOX_KijI" target="_blank"
+            class="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl text-xs text-center transition flex items-center justify-center space-x-1 shadow-sm">
+            <span>Buka 50 E-Course ➔</span>
+          </a>
+        </div>
+
+        <!-- PAKET 3: SPREADSHEET 120 PRODUK SIAP JUAL -->
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-emerald-400 transition">
+          <div class="space-y-2">
+            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
+              📊
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Database Spreadsheet</span>
+              <h4 class="font-extrabold text-slate-900 text-base mt-1">120 Produk Digital Siap Jual</h4>
+            </div>
+            <p class="text-xs text-slate-500 leading-relaxed">
+              Spreadsheet 120 item: Template Excel Keuangan, PPT Presentasi, Desain Medsos Canva, Template Elementor, Printable Journal, & Worksheet Anak.
+            </p>
+          </div>
+          <a id="linkSpreadsheet" href="https://docs.google.com/spreadsheets/d/1_9ND8yru_bVHQAEoMxG35-ZWX2peYOOSEB4l_-rZFKI/edit?usp=sharing" target="_blank"
+            class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs text-center transition flex items-center justify-center space-x-1 shadow-sm">
+            <span>Buka Spreadsheet ➔</span>
+          </a>
+        </div>
+
+      </div>
+
+      <!-- EXPLORER INTERAKTIF 120 PRODUK DIGITAL LANGSUNG DI HALAMAN -->
+      <div class="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+          <div>
+            <h3 class="font-extrabold text-slate-900 text-lg flex items-center space-x-2">
+              <span>🔎</span>
+              <span>Daftar 120 Produk Digital Siap Pakai & Siap Jual</span>
+            </h3>
+            <p class="text-xs text-slate-500">Anda dapat langsung membuka tautan file/canva untuk masing-masing produk berikut:</p>
+          </div>
+          <span class="text-xs font-bold bg-slate-100 text-slate-700 px-3 py-1 rounded-full self-start sm:self-auto" id="badgeItemCount">Memuat 120 produk...</span>
+        </div>
+
+        <!-- Filter & Search Box -->
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="text" id="searchItem" placeholder="Cari nama produk (misal: excel, canva, elementor, anak)..."
+            class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-emerald-500">
+          <select id="filterCategory" class="px-3 py-2 rounded-xl border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
+            <option value="">Semua Kategori</option>
+            <option value="Template PPT & Desain">Template PPT & Desain</option>
+            <option value="Video Tutorial">Video Tutorial</option>
+            <option value="Template Canva & Medsos">Template Canva & Medsos</option>
+            <option value="Template Website & Elementor">Template Website & Elementor</option>
+            <option value="Template Excel">Template Excel</option>
+            <option value="Planner & Printable Journal">Planner & Journal</option>
+            <option value="Edukasi & Worksheet Anak">Edukasi Anak</option>
+            <option value="E-Book & Panduan">E-Book & Panduan</option>
+          </select>
+        </div>
+
+        <!-- Tabel Daftar Produk -->
+        <div class="max-h-96 overflow-y-auto border border-slate-100 rounded-2xl">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 sticky top-0 font-bold border-b border-slate-200">
+              <tr>
+                <th class="px-3 py-2.5 w-12 text-center">No</th>
+                <th class="px-3 py-2.5">Judul Produk</th>
+                <th class="px-3 py-2.5 hidden sm:table-cell">Kategori</th>
+                <th class="px-3 py-2.5 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tableItemsBody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Diisi otomatis oleh JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- AJAKAN KEMITRAAN & LISENSI RESELL -->
+      <div class="bg-gradient-to-br from-amber-50 to-emerald-50 p-6 rounded-3xl border border-amber-200/70 text-left space-y-3">
+        <div class="flex items-start space-x-3">
+          <span class="text-3xl">🤝</span>
+          <div>
+            <h4 class="font-extrabold text-slate-900 text-base">Ingin Menjual Kembali Paket Lengkap Ini?</h4>
+            <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+              Dengan semangat <strong>Ekonomi Gotong Royong</strong>, Anda dapat mendaftar menjadi <strong>Mitra Resmi</strong> secara 100% Gratis. Bagikan tautan referral Anda, dan dapatkan <strong>Komisi 50% (Rp 25.000)</strong> untuk setiap penjualan langsung, serta <strong>Royalti Tim 10% (Rp 5.000)</strong> dari rekan yang Anda ajak!
+            </p>
+            <div class="mt-3 flex flex-wrap gap-2">
+              <a href="/mitra" class="text-xs font-extrabold bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2.5 rounded-xl shadow-sm transition">
+                Daftar Jadi Mitra Gotong Royong (Gratis) ➔
+              </a>
+              <a href="/" class="text-xs font-bold bg-white text-slate-700 hover:bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-300 transition">
+                Lihat Halaman Katalog
               </a>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- KONDISI 2: PEMBAYARAN BELUM SELESAI (PENDING) -->
-      <div id="boxPending" class="text-center space-y-6">
-        <!-- Icon Menunggu Jam Pasir Kuning -->
-        <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner font-bold">
-          ⏳
-        </div>
+    </div>
 
-        <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">Menunggu Pelunasan</span>
-          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Pembayaran Belum Selesai</h1>
-          <p class="text-sm text-slate-600 mt-2">
-            Pesanan ini masih berstatus <strong>MENUNGGU PEMBAYARAN</strong>. Berkas digital belum dapat diunduh sebelum pembayaran Anda terverifikasi oleh bank.
-          </p>
-        </div>
+    <!-- KONDISI 2: PEMBAYARAN BELUM SELESAI (PENDING) -->
+    <div id="boxPending" class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xl text-center space-y-6">
+      <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner font-bold">
+        ⏳
+      </div>
 
-        <!-- Rincian Tagihan Belum Lunas -->
-        <div class="bg-amber-50/60 rounded-2xl p-4 text-left text-xs space-y-2 border border-amber-200 text-slate-700">
-          <div class="flex justify-between">
-            <span>Nomor Pesanan:</span>
-            <span class="font-mono font-bold" id="pendingOrderId">...</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Total Tagihan:</span>
-            <span class="font-extrabold text-slate-900" id="pendingHarga">Rp 50.000</span>
-          </div>
-          <div class="flex justify-between">
-            <span>Status Saat Ini:</span>
-            <span class="font-bold text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded">BELUM DIBAYAR</span>
-          </div>
-        </div>
+      <div>
+        <span class="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 px-3 py-1 rounded-full">Menunggu Pelunasan</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">Pembayaran Belum Dikonfirmasi</h1>
+        <p class="text-xs sm:text-sm text-slate-600 mt-2">
+          Pesanan ini masih berstatus <strong>MENUNGGU PEMBAYARAN</strong>. Seluruh berkas digital dan folder Google Drive akan otomatis terbuka seketika setelah pembayaran Anda terverifikasi oleh bank.
+        </p>
+      </div>
 
-        <!-- Tombol Tindakan Pembeli -->
-        <div class="space-y-3 pt-2">
-          <a id="btnBackToCheckout" href="#"
-            class="block w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition">
-            💳 Selesaikan Pembayaran di DOKU ➔
-          </a>
-          
-          <button id="btnCheckStatusManual"
-            class="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-300 text-xs transition flex items-center justify-center space-x-1">
-            <span>🔄 Sudah Bayar? Klik untuk Cek Ulang Status</span>
-          </button>
+      <!-- Rincian Tagihan Belum Lunas -->
+      <div class="bg-amber-50/60 rounded-2xl p-4 text-left text-xs space-y-2 border border-amber-200 text-slate-700 max-w-sm mx-auto">
+        <div class="flex justify-between">
+          <span>Nomor Pesanan:</span>
+          <span class="font-mono font-bold" id="pendingOrderId">...</span>
         </div>
-
-        <div class="flex items-center justify-center space-x-2 text-[11px] text-slate-400 pt-2">
-          <svg class="animate-spin h-3.5 w-3.5 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-          </svg>
-          <span>Sistem terus memeriksa konfirmasi dari bank setiap 5 detik...</span>
+        <div class="flex justify-between">
+          <span>Total Tagihan:</span>
+          <span class="font-extrabold text-slate-900" id="pendingHarga">Rp 50.000</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Status:</span>
+          <span class="font-bold text-amber-700 bg-amber-200/60 px-2 py-0.5 rounded">BELUM DIBAYAR</span>
         </div>
       </div>
 
+      <!-- Tombol Tindakan Pembeli -->
+      <div class="space-y-3 pt-2 max-w-sm mx-auto">
+        <a id="btnBackToCheckout" href="#"
+          class="block w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-2xl shadow-lg shadow-emerald-600/30 text-base transition">
+          💳 Selesaikan Pembayaran di DOKU ➔
+        </a>
+        
+        <button id="btnCheckStatusManual"
+          class="w-full py-3 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-300 text-xs transition flex items-center justify-center space-x-1">
+          <span>🔄 Sudah Bayar? Klik untuk Cek Ulang Status</span>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-center space-x-2 text-[11px] text-slate-400 pt-2">
+        <svg class="animate-spin h-3.5 w-3.5 text-amber-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+        </svg>
+        <span>Sistem terus memeriksa konfirmasi dari bank setiap 5 detik...</span>
+      </div>
     </div>
 
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-400">
-    GotongRoyong.Digital — Verifikasi Transaksi Aman
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400">
+    <div class="max-w-5xl mx-auto px-4">
+      <p>© 2026 GotongRoyong.Digital — Solusi Mandiri Bagi Hasil Karya Digital (50% Penjual - 10% Upline - 40% Admin)</p>
+    </div>
   </footer>
 
   <script>
@@ -162,6 +295,69 @@
     const orderId = window.location.pathname.split('/').pop();
 
     let checkInterval = null;
+    let allPackageItems = [];
+
+    // Load 120 Products Catalog
+    async function loadPackageItems() {
+      try {
+        const res = await fetch(`${API_BASE}/api/package-items`);
+        const data = await res.json();
+        if (data.success && data.items) {
+          allPackageItems = data.items;
+          renderItems(allPackageItems);
+        }
+      } catch (e) {
+        console.warn('Gagal memuat katalog produk paket:', e);
+      }
+    }
+
+    function renderItems(items) {
+      const tbody = document.getElementById('tableItemsBody');
+      const badge = document.getElementById('badgeItemCount');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      badge.textContent = `${items.length} dari ${allPackageItems.length} Produk`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="px-4 py-6 text-center text-slate-400">Tidak ada produk yang cocok dengan pencarian Anda.</td></tr>`;
+        return;
+      }
+
+      items.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-slate-50 transition';
+        tr.innerHTML = `
+          <td class="px-3 py-2.5 font-mono text-center text-slate-400 font-bold">${item.no}</td>
+          <td class="px-3 py-2.5 font-bold text-slate-900">${item.title}</td>
+          <td class="px-3 py-2.5 hidden sm:table-cell text-slate-500"><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-semibold">${item.category}</span></td>
+          <td class="px-3 py-2.5 text-right">
+            <a href="${item.link}" target="_blank"
+              class="inline-block bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white border border-emerald-300 font-bold px-2.5 py-1 rounded-lg text-[11px] transition">
+              Buka Aset ➔
+            </a>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Filter & Search Handler
+    document.getElementById('searchItem').addEventListener('input', applyFilter);
+    document.getElementById('filterCategory').addEventListener('change', applyFilter);
+
+    function applyFilter() {
+      const q = document.getElementById('searchItem').value.toLowerCase().trim();
+      const cat = document.getElementById('filterCategory').value;
+
+      const filtered = allPackageItems.filter(item => {
+        const matchTitle = !q || item.title.toLowerCase().includes(q);
+        const matchCat = !cat || item.category === cat;
+        return matchTitle && matchCat;
+      });
+
+      renderItems(filtered);
+    }
 
     async function checkOrderStatus() {
       try {
@@ -176,7 +372,7 @@
 
         // PENTING: Periksa apakah pesanan BENAR-BENAR sudah LUNAS (PAID)
         if (data.is_paid && data.download_url) {
-          // Status LUNAS: Tampilkan box sukses dan buka tombol download
+          // Status LUNAS: Tampilkan box sukses dan buka tombol download & paket
           if (checkInterval) clearInterval(checkInterval);
 
           document.getElementById('boxPending').classList.add('hidden');
@@ -193,6 +389,21 @@
           }
 
           document.getElementById('btnDownload').href = `${API_BASE}${data.download_url}`;
+
+          // Jika ada link bundle khusus dari API
+          if (data.bundle_access) {
+            if (data.bundle_access.folder_univ_digital) {
+              document.getElementById('linkUnivDigital').href = data.bundle_access.folder_univ_digital;
+            }
+            if (data.bundle_access.folder_cuanlagi) {
+              document.getElementById('linkCuanlagi').href = data.bundle_access.folder_cuanlagi;
+            }
+            if (data.bundle_access.spreadsheet_products) {
+              document.getElementById('linkSpreadsheet').href = data.bundle_access.spreadsheet_products;
+            }
+          }
+
+          loadPackageItems();
         } else {
           // Status MASIH PENDING: Jangan beri akses download!
           document.getElementById('boxPaid').classList.add('hidden');
@@ -221,7 +432,7 @@
     // Jalankan pemeriksaan pertama kali
     checkOrderStatus();
 
-    // Auto-polling setiap 5 detik untuk mendeteksi saat uang benar-benar masuk
+    // Auto-polling setiap 5 detik untuk mendeteksi saat uang masuk
     checkInterval = setInterval(checkOrderStatus, 5000);
   </script>
 </body>

@@ -76,17 +76,22 @@ app.use((req, res, next) => {
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Produk Utama yang Dijual
+// Produk Utama & Paket Lengkap yang Dijual
 const PRODUCT = {
   id: 'PROD-BUKU-01',
-  name: 'E-Book & Lembar Kerja 30 Hari: Membangun Usaha yang Bernilai',
+  name: 'Membangun yang Bernilai & Mega Bundle 670+ Produk Digital + 50 Masterclass E-Course',
   author: 'Karya Digital Gotong Royong',
   price: 50000,
   commission: 25000,          // Kompatibilitas mundur
   commission_mitra: 25000,    // Tier 1: 50% (Rp 25.000) bagi hasil langsung ke mitra penjual
   commission_upline: 5000,    // Tier 2: 10% (Rp 5.000) bagi hasil ke upline yang mengajak mitra
   admin_share: 20000,         // Admin: 40% (Rp 20.000) pemeliharaan sistem & produk
-  file_path: path.join(__dirname, 'storage', 'products', 'membangun-yang-bernilai.pdf')
+  file_path: path.join(__dirname, 'storage', 'products', 'membangun-yang-bernilai.pdf'),
+  bundle_links: {
+    folder_univ_digital: 'https://drive.google.com/drive/folders/1xOfbEbwqIffo7tqAEbwNdn0VFN0EQ6L_?usp=drive_link',
+    folder_cuanlagi: 'https://drive.google.com/drive/folders/17prCtQGij_EGh_6sCjZvhlnvgOX_KijI',
+    spreadsheet_products: 'https://docs.google.com/spreadsheets/d/1_9ND8yru_bVHQAEoMxG35-ZWX2peYOOSEB4l_-rZFKI/edit?usp=sharing'
+  }
 };
 
 // Route Halaman
@@ -482,9 +487,29 @@ app.get('/api/orders/:order_id', async (req, res) => {
     created_at: order.created_at,
     paid_at: order.paid_at,
     doku_configured: dokuCfg.isConfigured,
-    // KUNCI KEAMANAN: download_url HANYA diberikan bila status benar-benar LUNAS (PAID)
-    download_url: isPaid ? `/download/${order.download_token}` : null
+    // KUNCI KEAMANAN: download_url & bundle_access HANYA diberikan bila status benar-benar LUNAS (PAID)
+    download_url: isPaid ? `/download/${order.download_token}` : null,
+    bundle_access: isPaid ? {
+      ebook_pdf: `/download/${order.download_token}`,
+      folder_univ_digital: PRODUCT.bundle_links.folder_univ_digital,
+      folder_cuanlagi: PRODUCT.bundle_links.folder_cuanlagi,
+      spreadsheet_products: PRODUCT.bundle_links.spreadsheet_products
+    } : null
   });
+});
+
+// Endpoint Katalog 120 Produk Digital Siap Jual (Dalam Paket)
+app.get('/api/package-items', (req, res) => {
+  const jsonPath = path.join(__dirname, 'storage', 'products', 'package_items.json');
+  if (fs.existsSync(jsonPath)) {
+    try {
+      const data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+      return res.json({ success: true, total: data.length, items: data });
+    } catch (e) {
+      return res.status(500).json({ error: 'Gagal memuat katalog paket produk.' });
+    }
+  }
+  res.json({ success: true, total: 0, items: [] });
 });
 
 // Status Channel & QRIS Image Endpoint (Terverifikasi Aman Tanpa String Palsu)
