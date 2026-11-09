@@ -64,6 +64,12 @@
           <div class="text-xs text-slate-700 font-semibold">Rp 19.999 / paket</div>
         </div>
       </div>
+
+      <!-- Badge Edukasi Kenapa 2 Tingkat Lebih Unggul -->
+      <div class="mt-4 p-3 bg-amber-50 border border-amber-200/80 rounded-2xl text-xs text-amber-950 font-medium max-w-xl mx-auto flex items-center space-x-2 text-left">
+        <span class="text-xl shrink-0">🛡️</span>
+        <span><strong>Bukan MLM / Skema Piramida:</strong> Tidak ada target tutup poin bulanan. Porsi komisi terbesar (50%) langsung dinikmati oleh Anda yang berjuang menjual langsung, dan 2 penjualan saja sudah balik modal 100%!</span>
+      </div>
     </div>
 
     <!-- Tampilan 1: Form Pendaftaran Mitra Baru (Jika Belum Login/Punya Kode) -->
@@ -298,6 +304,61 @@
           <button id="btnWithdraw" class="mt-2 w-full py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition">
             Tarik ke Rekening
           </button>
+        </div>
+      </div>
+
+      <!-- Bahan Promosi Siap Pakai (Tinggal Salin & Tempel di Status WhatsApp) -->
+      <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 sm:p-8 border border-emerald-200 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-3 border-b border-emerald-200/70">
+          <div>
+            <h3 class="text-lg font-black text-slate-900 flex items-center space-x-2">
+              <span>📢</span>
+              <span>Bahan Promosi & Teks Status Siap Pakai</span>
+            </h3>
+            <p class="text-xs text-slate-600 mt-0.5">Tinggal klik salin dan pasang di status WhatsApp atau media sosial Anda. Tautan referral Anda otomatis tertaut!</p>
+          </div>
+          <span class="text-[11px] bg-emerald-600 text-white font-bold px-3 py-1 rounded-full self-start sm:self-auto">Tinggal Copas</span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <!-- Template 1 -->
+          <div class="bg-white p-4 rounded-2xl border border-emerald-200 shadow-sm flex flex-col justify-between space-y-3">
+            <div>
+              <div class="font-extrabold text-emerald-800 uppercase text-[11px] mb-1">Status WA 1: Fokus Balik Modal Cepat</div>
+              <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded-xl border border-slate-100" id="textPromo1">
+                "Cuma modal pasang status WA doang, dapat komisi Rp 25.000 (50%) per penjualan langsung masuk rekening. BUKAN MLM, tanpa tutup poin! 2 orang beli aja udah 100% balik modal + untung. Yang mau paket usaha 670+ produk digital siap jual cuma Rp 49.999 sekali bayar seumur hidup, cek di sini: [LINK]"
+              </p>
+            </div>
+            <button onclick="copyPromoTemplate(1)" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition text-center shadow-sm">
+              📋 Salin Status 1
+            </button>
+          </div>
+
+          <!-- Template 2 -->
+          <div class="bg-white p-4 rounded-2xl border border-teal-200 shadow-sm flex flex-col justify-between space-y-3">
+            <div>
+              <div class="font-extrabold text-teal-800 uppercase text-[11px] mb-1">Status WA 2: Nilai Produk Super Lengkap</div>
+              <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded-xl border border-slate-100" id="textPromo2">
+                "Promo gila-gilaan! E-Book Membangun yang Bernilai + 50 E-Course Bisnis CUANLAGI + 500 Aset Digital Univ Digital + 120 Template Spreadsheet siap pakai total jutaan rupiah cuma dijual Rp 49.999! Sekali bayar langsung bisa dipelajari dan dijual kembali: [LINK]"
+              </p>
+            </div>
+            <button onclick="copyPromoTemplate(2)" class="w-full py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition text-center shadow-sm">
+              📋 Salin Status 2
+            </button>
+          </div>
+
+          <!-- Template 3 -->
+          <div class="bg-white p-4 rounded-2xl border border-amber-200 shadow-sm flex flex-col justify-between space-y-3">
+            <div>
+              <div class="font-extrabold text-amber-900 uppercase text-[11px] mb-1">Status WA 3: Ajak Teman Gotong Royong</div>
+              <p class="text-slate-600 italic bg-slate-50 p-2.5 rounded-xl border border-slate-100" id="textPromo3">
+                "Lagi cari penghasilan sampingan dari HP? Yuk gabung jadi mitra Gotong Royong Digital. 100% GRATIS daftar, jual produk dapat Rp 25.000 per paket. Saya bimbing langsung sampai bisa! Daftar gratis lewat link kemitraan resmi ini: [LINK]"
+              </p>
+            </div>
+            <button onclick="copyPromoTemplate(3)" class="w-full py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-xl transition text-center shadow-sm">
+              📋 Salin Status 3 (Ajak Mitra)
+            </button>
+          </div>
         </div>
       </div>
 
@@ -618,6 +679,24 @@
       const val = document.getElementById('inputCariRef').value.trim();
       if (val) fetchMitraDashboard(val);
     });
+
+    // Salin Template Promo dengan Tautan Referral Otomatis
+    function copyPromoTemplate(num) {
+      const linkBuku = document.getElementById('dashLinkBuku')?.value || `${window.location.origin}/`;
+      const linkMitra = document.getElementById('dashLinkMitra')?.value || `${window.location.origin}/mitra`;
+      let text = '';
+
+      if (num === 1) {
+        text = `Cuma modal pasang status WA doang, dapat komisi Rp 25.000 (50%) per penjualan langsung masuk rekening! 🔥\n\nBUKAN MLM, tanpa tutup poin! 2 orang beli aja udah 100% BALIK MODAL + UNTUNG.\n\nYang mau paket usaha 670+ produk digital siap jual cuma Rp 49.999 sekali bayar seumur hidup, cek di sini ya:\n👉 ${linkBuku}`;
+      } else if (num === 2) {
+        text = `PROMO GILA-GILAAN HARI INI! 🚀\n\nDapat E-Book Rencana Usaha 30 Hari "Membangun yang Bernilai" + 50 E-Course Bisnis CUANLAGI + 500 Aset Univ Digital + 120 Database Template Siap Jual.\n\nTotal nilai jutaan rupiah cuma Rp 49.999! Sekali beli langsung bisa dipelajari dan dijual kembali 100% untung.\n\nAmbil promonya sekarang:\n👉 ${linkBuku}`;
+      } else if (num === 3) {
+        text = `Lagi cari penghasilan sampingan dari rumah modal HP? 🤝\n\nYuk gabung jadi mitra Gotong Royong Digital. 100% GRATIS daftar, jual produk dapat Rp 25.000 (50%) per paket + pasif income tim Rp 5.000.\n\nSaya bimbing langsung sampai bisa! Daftar gratis lewat link kemitraan resmi ini:\n👉 ${linkMitra}`;
+      }
+
+      navigator.clipboard.writeText(text);
+      alert(`Teks Status ${num} berhasil disalin ke clipboard! Silakan buka WhatsApp dan tempel di status atau kirim ke kontak Anda.`);
+    }
 
     // Tombol Ganti Akun
     document.getElementById('btnGantiMitra').addEventListener('click', () => {
