@@ -6,6 +6,11 @@ const dbDir = process.env.VERCEL ? '/tmp' : __dirname;
 const dbPath = path.join(dbDir, 'gotong_royong.db');
 const db = new DatabaseSync(dbPath);
 
+// Konfigurasi Performa Tinggi & Konkurensi Ratusan Pengguna Bersamaan (WAL Mode & Busy Timeout)
+db.exec('PRAGMA journal_mode = WAL;');
+db.exec('PRAGMA busy_timeout = 5000;');
+db.exec('PRAGMA synchronous = NORMAL;');
+
 // Inisialisasi Tabel
 db.exec(`
   CREATE TABLE IF NOT EXISTS mitra (
@@ -65,22 +70,41 @@ try { db.exec('ALTER TABLE mitra ADD COLUMN bank_pemilik TEXT;'); } catch (e) {}
 
 // Helpers Database
 const Mitra = {
-  create: (nama, whatsapp, rekening_bank, customRef = null, uplineRef = null, bankData = {}) => {
-    let ref_code = customRef
-      ? customRef.toLowerCase().replace(/[^a-z0-9]/g, '')
-      : (nama.toLowerCase().split(' ')[0] + Math.floor(100 + Math.random() * 900));
+  create: (namaOrObj, whatsapp, rekening_bank, customRef = null, uplineRef = null, bankData = {}) => {
+    let nama = namaOrObj;
+    let custom_ref = customRef;
+    let upline_ref = uplineRef;
+    let bank_data = bankData;
+
+    if (typeof namaOrObj === 'object' && namaOrObj !== null) {
+      nama = namaOrObj.nama;
+      whatsapp = namaOrObj.whatsapp;
+      rekening_bank = namaOrObj.rekening_bank || `${namaOrObj.bank_nama || ''} - ${namaOrObj.bank_nomor || ''} a.n ${namaOrObj.bank_pemilik || ''}`;
+      custom_ref = namaOrObj.custom_ref || namaOrObj.customRef;
+      upline_ref = namaOrObj.upline_ref || namaOrObj.uplineRef;
+      bank_data = {
+        bank_nama: namaOrObj.bank_nama,
+        bank_nomor: namaOrObj.bank_nomor,
+        bank_pemilik: namaOrObj.bank_pemilik
+      };
+    }
+
+    const safeNama = String(nama || 'Mitra');
+    let ref_code = custom_ref
+      ? String(custom_ref).toLowerCase().replace(/[^a-z0-9]/g, '')
+      : (safeNama.toLowerCase().split(' ')[0] + Math.floor(100 + Math.random() * 900));
 
     // Pastikan ref_code unik
     let check = db.prepare('SELECT id FROM mitra WHERE ref_code = ?').get(ref_code);
     while (check) {
-      ref_code = nama.toLowerCase().split(' ')[0] + Math.floor(1000 + Math.random() * 9000);
+      ref_code = safeNama.toLowerCase().split(' ')[0] + Math.floor(1000 + Math.random() * 9000);
       check = db.prepare('SELECT id FROM mitra WHERE ref_code = ?').get(ref_code);
     }
 
     // Validasi upline jika ada
     let validUpline = null;
-    if (uplineRef) {
-      const cleanUpline = String(uplineRef).toLowerCase().trim();
+    if (upline_ref) {
+      const cleanUpline = String(upline_ref).toLowerCase().trim();
       if (cleanUpline !== ref_code) {
         const uplineMitra = db.prepare('SELECT ref_code FROM mitra WHERE ref_code = ?').get(cleanUpline);
         if (uplineMitra) {
@@ -89,9 +113,9 @@ const Mitra = {
       }
     }
 
-    const bank_nama = bankData?.bank_nama || null;
-    const bank_nomor = bankData?.bank_nomor || null;
-    const bank_pemilik = bankData?.bank_pemilik || null;
+    const bank_nama = bank_data?.bank_nama || null;
+    const bank_nomor = bank_data?.bank_nomor || null;
+    const bank_pemilik = bank_data?.bank_pemilik || null;
 
     const now = new Date().toISOString();
     const stmt = db.prepare(`
