@@ -356,6 +356,9 @@
         });
         const data = await res.json();
         if (data.success && data.redirect_url) {
+          if (data.order_id) {
+            localStorage.setItem('last_order_id', data.order_id);
+          }
           // Arahkan ke URL checkout di server
           const targetUrl = (window.location.origin.startsWith('http'))
             ? data.redirect_url

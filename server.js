@@ -183,8 +183,18 @@ app.post('/api/orders/:order_id/doku-checkout', async (req, res) => {
     return res.json({ success: true, redirect_url: `/success/${order.order_id}` });
   }
 
+  // Jika sudah ada payment_url resmi yang tersimpan, gunakan langsung
+  if (order.payment_url && order.payment_url.startsWith('https://checkout.doku.com/')) {
+    return res.json({
+      success: true,
+      paymentUrl: order.payment_url
+    });
+  }
+
   try {
-    const checkoutResult = await Doku.createCheckoutPayment(order);
+    const proto = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const currentBaseUrl = `${proto}://${req.get('host')}`;
+    const checkoutResult = await Doku.createCheckoutPayment(order, null, currentBaseUrl);
     Orders.setPaymentUrl(order.order_id, checkoutResult.paymentUrl);
     res.json({
       success: true,
@@ -401,7 +411,7 @@ app.post('/api/mitra/:ref_code/withdraw', (req, res) => {
 });
 
 // Buat Pesanan Baru (Mendukung Pembagian Keuntungan 2 Tingkat)
-app.post('/api/orders/create', (req, res) => {
+app.post('/api/orders/create', async (req, res) => {
   const { pembeli_nama, pembeli_email, pembeli_wa } = req.body;
   if (!pembeli_nama || !pembeli_email || !pembeli_wa) {
     return res.status(400).json({ error: 'Data pembeli wajib diisi lengkap.' });
@@ -444,9 +454,27 @@ app.post('/api/orders/create', (req, res) => {
     komisi_upline: komisi_upline
   });
 
+  // Pra-buat tautan pembayaran resmi DOKU seketika agar saat pembeli masuk checkout sudah 100% siap
+  let paymentUrl = null;
+  const dokuCfg = Doku.getConfig();
+  if (dokuCfg.isConfigured) {
+    try {
+      const proto = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+      const currentBaseUrl = `${proto}://${req.get('host')}`;
+      const checkoutResult = await Doku.createCheckoutPayment(order, null, currentBaseUrl);
+      if (checkoutResult && checkoutResult.paymentUrl) {
+        paymentUrl = checkoutResult.paymentUrl;
+        Orders.setPaymentUrl(order.order_id, paymentUrl);
+      }
+    } catch (e) {
+      console.warn('Pra-pembuatan DOKU Checkout saat create order:', e.message);
+    }
+  }
+
   res.json({
     success: true,
     order_id: order.order_id,
+    payment_url: paymentUrl,
     redirect_url: `/checkout/${order.order_id}`
   });
 });
@@ -472,6 +500,22 @@ app.get('/api/orders/:order_id', async (req, res) => {
   }
 
   const dokuCfg = Doku.getConfig();
+
+  // Jika order PENDING tapi belum punya payment_url, buatkan sekarang agar checkout instan
+  if (order.status === 'PENDING' && !order.payment_url && dokuCfg.isConfigured) {
+    try {
+      const proto = req.protocol === 'https' || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+      const currentBaseUrl = `${proto}://${req.get('host')}`;
+      const checkoutResult = await Doku.createCheckoutPayment(order, null, currentBaseUrl);
+      if (checkoutResult && checkoutResult.paymentUrl) {
+        Orders.setPaymentUrl(order.order_id, checkoutResult.paymentUrl);
+        order.payment_url = checkoutResult.paymentUrl;
+      }
+    } catch (e) {
+      console.warn('Gagal pra-buat payment_url di GET order:', e.message);
+    }
+  }
+
   const isPaid = order.status === 'PAID';
 
   res.json({

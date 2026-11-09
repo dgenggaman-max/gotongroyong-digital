@@ -180,12 +180,33 @@
 
   <script>
     const API_BASE = (window.location.origin && window.location.origin.startsWith('http')) ? window.location.origin : 'http://localhost:3000';
-    const pathParts = window.location.pathname.split('/');
-    const orderId = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
-    document.getElementById('orderIdText').textContent = orderId;
+    
+    // Ekstraksi Order ID secara robust (Pathname, Query Param, atau LocalStorage)
+    const urlParams = new URLSearchParams(window.location.search);
+    let orderId = urlParams.get('order_id') || urlParams.get('id');
+
+    if (!orderId) {
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      const lastPart = pathParts[pathParts.length - 1];
+      if (lastPart && lastPart !== 'checkout' && lastPart !== 'checkout.html') {
+        orderId = lastPart;
+      }
+    }
+
+    if (!orderId) {
+      orderId = localStorage.getItem('last_order_id');
+    }
+
+    if (orderId) {
+      localStorage.setItem('last_order_id', orderId);
+      document.getElementById('orderIdText').textContent = orderId;
+    } else {
+      document.getElementById('orderIdText').textContent = 'Memuat Pesanan...';
+    }
 
     let pollInterval = null;
     let dokuPaymentUrl = null;
+    let dokuErrorMessage = null;
 
     // Tab Switching
     const tabBtnQris = document.getElementById('tabBtnQris');
@@ -209,15 +230,22 @@
 
     // Load Order
     async function loadOrder() {
+      if (!orderId) {
+        alert('Tidak ditemukan ID pesanan yang valid. Anda akan dialihkan ke beranda untuk memilih paket.');
+        window.location.href = `${API_BASE}/`;
+        return;
+      }
+
       try {
         const res = await fetch(`${API_BASE}/api/orders/${orderId}`);
-        const data = await res.json();
-        if (data.error) {
-          alert('Pesanan tidak ditemukan.');
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          alert(errData.error || 'Pesanan tidak ditemukan di database.');
           window.location.href = `${API_BASE}/`;
           return;
         }
 
+        const data = await res.json();
         if (data.status === 'PAID') {
           window.location.href = `${API_BASE}/success/${orderId}`;
           return;
@@ -231,17 +259,24 @@
           document.getElementById('refText').textContent = data.ref_code;
         }
 
+        // Jika server sudah pra-buat payment_url resmi DOKU, langsung gunakan seketika!
+        if (data.payment_url && data.payment_url.startsWith('http')) {
+          dokuPaymentUrl = data.payment_url;
+        } else {
+          prepareDokuCheckout();
+        }
+
         loadQrisImage();
-        prepareDokuCheckout();
         startPolling();
         startTimer(15 * 60);
       } catch (err) {
-        console.error(err);
+        console.error('Gagal memuat detail pesanan:', err);
       }
     }
 
     // Load QRIS
     async function loadQrisImage() {
+      if (!orderId) return;
       const loader = document.getElementById('qrisLoader');
       const img = document.getElementById('qrisImage');
       const btnDownload = document.getElementById('btnDownloadQris');
@@ -287,15 +322,22 @@
 
     // Prepare DOKU Checkout
     async function prepareDokuCheckout() {
+      if (!orderId) return null;
       try {
         const res = await fetch(`${API_BASE}/api/orders/${orderId}/doku-checkout`, { method: 'POST' });
         const data = await res.json();
         if (data.success && data.paymentUrl) {
           dokuPaymentUrl = data.paymentUrl;
+          dokuErrorMessage = null;
+          return dokuPaymentUrl;
+        } else if (data.error) {
+          dokuErrorMessage = data.error;
         }
       } catch (e) {
+        dokuErrorMessage = 'Koneksi ke backend terputus: ' + e.message;
         console.warn('Persiapan DOKU checkout:', e.message);
       }
+      return null;
     }
 
     // Tombol Bayar DOKU
@@ -311,7 +353,10 @@
       if (dokuPaymentUrl) {
         window.location.href = dokuPaymentUrl;
       } else {
-        alert('Gagal menghubungkan ke gerbang DOKU. Silakan periksa koneksi internet Anda atau coba beberapa saat lagi.');
+        const detailMsg = dokuErrorMessage 
+          ? `\n\nDetail kendala: ${dokuErrorMessage}` 
+          : '\n\nPastikan server lokal sudah berjalan dengan membuka "JALANKAN_PLATFORM.bat" atau menjalankan "node server.js".';
+        alert('Gagal menghubungkan ke gerbang DOKU.' + detailMsg);
         btn.disabled = false;
         btn.innerHTML = '<span>💳 Bayar Sekarang via DOKU Resmi ➔</span>';
       }
@@ -319,6 +364,7 @@
 
     // Polling Status
     function startPolling() {
+      if (!orderId) return;
       pollInterval = setInterval(async () => {
         try {
           const res = await fetch(`${API_BASE}/api/orders/${orderId}`);

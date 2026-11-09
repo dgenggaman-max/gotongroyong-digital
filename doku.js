@@ -30,6 +30,10 @@ const Doku = {
       } catch (e) {}
     }
 
+    // Default Fallback Kredensial Resmi DOKU Produksi
+    if (!clientId) clientId = 'BRN-0271-1793450501160';
+    if (!secretKey) secretKey = 'SK-9QFOiDRMBQQqkJZCKaCN';
+
     return {
       clientId,
       secretKey,
@@ -62,7 +66,7 @@ const Doku = {
     return `HMACSHA256=${crypto.createHmac('sha256', secret).update(parts.join('\n')).digest('base64')}`;
   },
 
-  createCheckoutPayment: async (order, paymentMethods = null) => {
+  createCheckoutPayment: async (order, paymentMethods = null, customBaseUrl = null) => {
     const config = Doku.getConfig();
     if (!config.isConfigured) {
       throw new Error('Kredensial DOKU belum dikonfigurasi. Masukkan Client ID dan Secret Key dari https://dashboard.doku.com/bo/dashboard');
@@ -71,13 +75,24 @@ const Doku = {
     const target = '/checkout/v1/payment';
     const requestId = crypto.randomUUID();
     const timestamp = new Date().toISOString().slice(0, 19) + 'Z';
-    const baseUrl = process.env.APP_BASE_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
+    const baseUrl = customBaseUrl || process.env.APP_BASE_URL || process.env.RENDER_EXTERNAL_URL || 'http://localhost:3000';
 
     const cleanProductName = String(order.product_name || 'Paket Gotong Royong Digital')
       .replace(/&/g, 'dan')
       .replace(/[^a-zA-Z0-9.\-/+,=_:'@%() ]/g, '')
       .trim()
       .substring(0, 64);
+
+    const cleanName = String(order.pembeli_nama || 'Pelanggan Gotong Royong')
+      .replace(/[^a-zA-Z0-9. ]/g, '')
+      .trim() || 'Pelanggan Gotong Royong';
+
+    const cleanEmail = (order.pembeli_email && order.pembeli_email.includes('@'))
+      ? order.pembeli_email.trim()
+      : 'pelanggan@gotongroyong.digital';
+
+    const rawPhone = String(order.pembeli_wa || '').replace(/\D/g, '');
+    const cleanPhone = (rawPhone.length >= 9 && rawPhone.length <= 16) ? rawPhone : '081234567890';
 
     const orderPayload = {
       order: {
@@ -99,9 +114,9 @@ const Doku = {
         payment_due_date: 60 // 60 menit masa berlaku
       },
       customer: {
-        name: order.pembeli_nama,
-        email: order.pembeli_email,
-        phone: order.pembeli_wa
+        name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone
       }
     };
 
